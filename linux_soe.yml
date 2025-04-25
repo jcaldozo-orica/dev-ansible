@@ -42,6 +42,7 @@
           - resolvconf
           state: present
       - name: add ori.orica.net suffix to resolv.conf
+        become: true
         ansible.builtin.lineinfile:
           path: /etc/resolvconf/resolv.conf.d/tail
           line:  search ori.orica.net
