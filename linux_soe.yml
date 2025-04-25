@@ -37,6 +37,7 @@
         become: true
     #configure ori.orica.net dns suffix
       - name: Install a list of packages
+        become: true
         ansible.builtin.apt:
           pkg:
           - resolvconf
