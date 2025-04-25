@@ -8,15 +8,19 @@
       state: present
       key: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/ansible.key
   - name: create systemadmin group
-    become: true
-    shell: 'groupadd -g 650 systemadmin'
+    ansible.builtin.group:
+      name: systemadmin
+      state: present
+      gid: 650
   - name: add systemadmin to sudo
     become: true
     ansible.builtin.lineinfile:
       path: /etc/sudoers.d/orica
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
       create: yes
-  - name: add admin3 to systemadmin
-    become: true
-    shell: 'usermod -aG systemadmin admin3'
+  - name: Add admin3 to systemadmin group
+    ansible.builtin.user:
+      name: admin3
+      groups: systemadmin
+      append: yes
     
