@@ -11,6 +11,7 @@
     become: true
     shell: 'groupadd -g 650 systemadmin'
   - name: add systemadmin to sudo
+    become: true
     ansible.builtin.lineinfile:
       path: /etc/sudoers.d/orica
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
