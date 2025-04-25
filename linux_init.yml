@@ -1,3 +1,4 @@
+tasks: 
 - name: Set authorized keys taken from url
   ansible.posix.authorized_key:
     user: admin3
