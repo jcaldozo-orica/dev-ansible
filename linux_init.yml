@@ -6,4 +6,4 @@
     ansible.posix.authorized_key:
       user: admin3
       state: present
-      key: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/host_vars/ansible.key
+      key: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/ansible.key

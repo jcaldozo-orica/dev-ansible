@@ -12,13 +12,26 @@
    tasks:
 
     #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
-      - name: Copy CA certificate to target hosts
+      - name: Download CA certificates to target hosts
         become: true
-        copy:
-          src: "{{ ca_cert_path }}"
-          dest: /usr/local/share/ca-certificates/
-          remote_user: root
-
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/zscalerRootCA.crt
+          dest: /usr/local/share/ca-certificates/zscalerRootCA.crt
+      - name: Download CA certificates to target hosts
+        become: true
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/zscalerSubCA.crt
+          dest: /usr/local/share/ca-certificates/zscalerSubCA.crt
+      - name: Download CA certificates to target hosts
+        become: true
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/orica_root.crt
+          dest: /usr/local/share/ca-certificates/orica_root.crt
+      - name: Download CA certificates to target hosts
+        become: true
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/orica_sub_ca2.crt
+          dest: /usr/local/share/ca-certificates/orica_sub_ca2.crt
       - name: Update CA trust store
         shell: "update-ca-certificates"
         become: true
