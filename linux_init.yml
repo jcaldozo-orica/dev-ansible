@@ -19,6 +19,7 @@
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
       create: yes
   - name: Add admin3 to systemadmin group
+    become: true
     ansible.builtin.user:
       name: admin3
       groups: systemadmin
