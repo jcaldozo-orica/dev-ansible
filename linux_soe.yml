@@ -1,0 +1,40 @@
+---
+
+ - name: talk to all hosts just so we can learn about them
+   hosts: dev
+   tasks:
+     - name: Classify hosts depending on their OS distribution
+       group_by:
+         key: os_{{ ansible_facts['distribution'] }}
+
+ - hosts: os_Ubuntu
+   gather_facts: False
+   tasks:
+
+    #copy zscaler, root ca, sub1 ca, sub2 ca
+
+    #configure ori.orica.net dns suffix
+
+    #install and configure nxlog
+
+    #install servicenow agent
+
+    #install crowdstrike
+
+    #install qualys
+
+    #install servicenow acc
+
+    #install illumio
+
+    #configure to allow Icinga
+
+    #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
+
+    #configure AD login
+
+    #configure tmux
+
+    #configure zsh
+    
+
