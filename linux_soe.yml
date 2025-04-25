@@ -11,9 +11,31 @@
    gather_facts: False
    tasks:
 
-    #copy zscaler, root ca, sub1 ca, sub2 ca
+    #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
+      - name: Copy CA certificate to target hosts
+        become: true
+        copy:
+          src: "{{ ca_cert_path }}"
+          dest: /usr/local/share/ca-certificates/
+          remote_user: root
 
+      - name: Update CA trust store
+        shell: "update-ca-certificates"
+        become: true
     #configure ori.orica.net dns suffix
+      - name: Install a list of packages
+        ansible.builtin.apt:
+          pkg:
+          - resolvconf
+          state: present
+      - name: add ori.orica.net suffix to resolv.conf
+        ansible.builtin.lineinfile:
+          path: /etc/resolvconf/resolv.conf.d/tail
+          line:  search ori.orica.net
+          create: yes
+      - name: update /etc/resolv.conf
+        shell: "resolvconf -u"
+        become: true
 
     #install and configure nxlog
 
@@ -36,5 +58,5 @@
     #configure tmux
 
     #configure zsh
-    
+
 
