@@ -18,6 +18,7 @@
       path: /etc/sudoers.d/orica
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
       create: yes
+      validate: /usr/sbin/visudo -cf %s
   - name: Add admin3 to systemadmin group
     become: true
     ansible.builtin.user:

@@ -10,28 +10,19 @@
  - hosts: os_Ubuntu
    gather_facts: False
    tasks:
+    # copy soe folder
+      - name: download required files and folders
+        become: true
+        ansible.builtin.get_url:
+          url:  https://stshareddevaue01.blob.core.windows.net/soe?sp=r&st=2025-04-28T03:31:46Z&se=2028-04-28T11:31:46Z&spr=https&sv=2024-11-04&sr=c&sig=IkTerC2Y%2FC3Fi%2BRq2PFZUszbcneFofDrQvvLTOaqCbQ%3D
+          dest: "{{ linuxSoePath }}"
 
     #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
-      - name: Download CA certificates to target hosts
+      - name: Copy CA certificates to target hosts
         become: true
-        ansible.builtin.get_url:
-          url:  ${{ ZSCALERROOTCA }}
-          dest: /usr/local/share/ca-certificates/zscalerRootCA.crt
-      - name: Download CA certificates to target hosts
-        become: true
-        ansible.builtin.get_url:
-          url: ${{ ZSCALERSUBCA }}
-          dest: /usr/local/share/ca-certificates/zscalerSubCA.crt
-      - name: Download CA certificates to target hosts
-        become: true
-        ansible.builtin.get_url:
-          url: ${{ ORICAROOTCA }}
-          dest: /usr/local/share/ca-certificates/orica_root.crt
-      - name: Download CA certificates to target hosts
-        become: true
-        ansible.builtin.get_url:
-          url: ${{ ORICASUBCA2 }}
-          dest: /usr/local/share/ca-certificates/orica_sub_ca2.crt
+        ansible.builtin.copy:
+          src:  "{{ linuxSoePath }}/cert/" 
+          dest: /usr/local/share/ca-certificates/
       - name: Update CA trust store
         shell: "update-ca-certificates"
         become: true
@@ -52,7 +43,7 @@
         shell: "resolvconf -u"
         become: true
 
-    #install and configure nxlog
+    #install and configure nxlog / point to 10.172.32.101
       - name: Install a list of packages
         become: true
         ansible.builtin.apt:
@@ -62,6 +53,7 @@
           - libdbi1
           state: present
       #config goes here
+
     #install servicenow agent
 
     #install crowdstrike
@@ -75,7 +67,18 @@
     #configure to allow Icinga
 
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
-
+      - name: Copy banner from soe directory
+        become: true
+        ansible.builtin.copy:
+          src:  "{{ linuxSoePath }}/linux/banner.txt" 
+          dest: /etc/ssh/banner.txt
+      - name: Configure sshd_config with banner and PermitRootLogin
+        ansible.builtin.lineinfile:
+          path: /etc/ssh/sshd_config
+          state: present
+          regexp: '^#Banner none'
+          line: 'Banner /etc/ssh/banner.txt'
+      
     #configure AD login
 
     #configure tmux
