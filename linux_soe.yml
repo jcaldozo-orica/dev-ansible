@@ -26,6 +26,7 @@
         ansible.builtin.copy:
           src:  "{{ linuxSoePath }}/soe/cert/" 
           dest: /usr/local/share/ca-certificates/
+          remote_src: yes
       - name: Update CA trust store
         shell: "update-ca-certificates"
         become: true
@@ -75,6 +76,7 @@
         ansible.builtin.copy:
           src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
           dest: /etc/ssh/banner.txt
+          remote_src: yes
       - name: Configure sshd_config with banner and PermitRootLogin
         ansible.builtin.lineinfile:
           path: /etc/ssh/sshd_config
