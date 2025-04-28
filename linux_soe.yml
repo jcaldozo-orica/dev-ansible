@@ -15,22 +15,22 @@
       - name: Download CA certificates to target hosts
         become: true
         ansible.builtin.get_url:
-          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/zscalerRootCA.crt
+          url:  ${{ ZSCALERROOTCA }}
           dest: /usr/local/share/ca-certificates/zscalerRootCA.crt
       - name: Download CA certificates to target hosts
         become: true
         ansible.builtin.get_url:
-          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/zscalerSubCA.crt
+          url: ${{ ZSCALERSUBCA }}
           dest: /usr/local/share/ca-certificates/zscalerSubCA.crt
       - name: Download CA certificates to target hosts
         become: true
         ansible.builtin.get_url:
-          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/orica_root.crt
+          url: ${{ ORICAROOTCA }}
           dest: /usr/local/share/ca-certificates/orica_root.crt
       - name: Download CA certificates to target hosts
         become: true
         ansible.builtin.get_url:
-          url: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/orica_sub_ca2.crt
+          url: ${{ ORICASUBCA2 }}
           dest: /usr/local/share/ca-certificates/orica_sub_ca2.crt
       - name: Update CA trust store
         shell: "update-ca-certificates"
@@ -53,7 +53,15 @@
         become: true
 
     #install and configure nxlog
-
+      - name: Install a list of packages
+        become: true
+        ansible.builtin.apt:
+          pkg:
+          - nxlog-ce
+          - libapr1
+          - libdbi1
+          state: present
+      #config goes here
     #install servicenow agent
 
     #install crowdstrike
