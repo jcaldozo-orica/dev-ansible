@@ -11,11 +11,11 @@
        ansible.builtin.get_url:
          url:  https://stshareddevaue01.blob.core.windows.net/soe/linux/azcopy?sp=r&st=2025-04-28T07:04:10Z&se=2028-04-28T15:04:10Z&spr=https&sv=2024-11-04&sr=b&sig=PR%2BGd88HkxGEAtp00SwYBmbueJqSHOLl1gFn1XGdTkU%3D
          dest: "/usr/bin/"
-         mode: "0644"
+         mode: "0755"
      - name: download soe files via azcopy
        become: true
        ansible.builtin.shell: |
-           /usr/bin/azcopy "https://stshareddevaue01.blob.core.windows.net/soe?sp=r&st=2025-04-28T03:31:46Z&se=2028-04-28T11:31:46Z&spr=https&sv=2024-11-04&sr=c&sig=IkTerC2Y%2FC3Fi%2BRq2PFZUszbcneFofDrQvvLTOaqCbQ%3D" "{{ linuxSoePath/ }}"
+           /usr/bin/azcopy copy --recursive "https://stshareddevaue01.blob.core.windows.net/soe?sp=rl&st=2025-04-28T07:21:21Z&se=2028-04-28T15:21:21Z&spr=https&sv=2024-11-04&sr=c&sig=zlxFO9GYhViuoENKd7jnxD6QEFMtojutmJ0S26ayjrk%3D" "{{ linuxSoePath/ }}"
  - hosts: os_Ubuntu
    gather_facts: False
    tasks:
