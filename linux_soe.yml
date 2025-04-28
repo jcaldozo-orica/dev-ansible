@@ -24,7 +24,7 @@
       - name: Copy CA certificates to target hosts
         become: true
         ansible.builtin.copy:
-          src:  "{{ linuxSoePath }}/cert/" 
+          src:  "{{ linuxSoePath }}/soe/cert/" 
           dest: /usr/local/share/ca-certificates/
       - name: Update CA trust store
         shell: "update-ca-certificates"
@@ -73,7 +73,7 @@
       - name: Copy banner from soe directory
         become: true
         ansible.builtin.copy:
-          src:  "{{ linuxSoePath }}/linux/banner.txt" 
+          src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
           dest: /etc/ssh/banner.txt
       - name: Configure sshd_config with banner and PermitRootLogin
         ansible.builtin.lineinfile:
