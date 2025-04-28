@@ -6,16 +6,19 @@
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
-
+     - name: download azcopy
+       become: true
+       ansible.builtin.get_url:
+         url:  https://stshareddevaue01.blob.core.windows.net/soe/linux/azcopy?sp=r&st=2025-04-28T07:04:10Z&se=2028-04-28T15:04:10Z&spr=https&sv=2024-11-04&sr=b&sig=PR%2BGd88HkxGEAtp00SwYBmbueJqSHOLl1gFn1XGdTkU%3D
+         dest: "/usr/bin/"
+     - name: download soe files via azcopy
+       become: true
+       ansible.builtin.shell: |
+           /usr/bin/azcopy https://stshareddevaue01.blob.core.windows.net/soe?sp=r&st=2025-04-28T03:31:46Z&se=2028-04-28T11:31:46Z&spr=https&sv=2024-11-04&sr=c&sig=IkTerC2Y%2FC3Fi%2BRq2PFZUszbcneFofDrQvvLTOaqCbQ%3D {{ linuxSoePath/ }}
  - hosts: os_Ubuntu
    gather_facts: False
    tasks:
-    # copy soe folder
-      - name: download required files and folders
-        become: true
-        ansible.builtin.get_url:
-          url:  https://stshareddevaue01.blob.core.windows.net/soe?sp=r&st=2025-04-28T03:31:46Z&se=2028-04-28T11:31:46Z&spr=https&sv=2024-11-04&sr=c&sig=IkTerC2Y%2FC3Fi%2BRq2PFZUszbcneFofDrQvvLTOaqCbQ%3D
-          dest: "{{ linuxSoePath }}"
+
 
     #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
       - name: Copy CA certificates to target hosts
