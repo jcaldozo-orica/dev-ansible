@@ -9,7 +9,7 @@
       register: kvValue
    
 - name: declare falcon cid
-  set_fact:
+  ansible.builtin.set_fact:
    oricacscid: "{{ kvValue }}"
 - name: Output key vault secret
   debug: 
