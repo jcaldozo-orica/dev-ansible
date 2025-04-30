@@ -2,6 +2,8 @@
 
 - name: control node to run keyvault retrieval
   hosts: localhost
+  connection: local
+
   tasks:
     - include_tasks: get_kv_secrets.yml
       vars:
