@@ -10,7 +10,7 @@
    
 - name: declare falcon cid
   set_fact:
-   oricacscid: "{{ kvValue }}""
+   oricacscid: "{{ kvValue }}"
 - name: Output key vault secret
   debug: 
     msg="oricacscid is {{ kvValue }}"
