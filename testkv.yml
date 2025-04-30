@@ -1,0 +1,16 @@
+---
+
+- name: talk to all hosts just so we can learn about them
+  hosts: dev
+  tasks:
+    - include: get_kv_secrets.yml
+      vars:
+        secretName: "oricacscid"
+      register: kvValue
+   
+- name: declare falcon cid
+  set_fact:
+   oricacscid: {{ kvValue }}
+- name: Output key vault secret
+  debug: 
+    msg="oricacscid is {{ kvValue }}"

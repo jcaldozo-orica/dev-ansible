@@ -1,1 +1,2 @@
 linuxSoePath: "/opt/soe"
+keyvaultUri: "https://kv-ctansible-dev-aue-01.vault.azure.net"
