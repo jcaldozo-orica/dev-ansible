@@ -1,7 +1,7 @@
 ---
 
-- name: talk to all hosts just so we can learn about them
-  hosts: dev
+- name: control node to run keyvault retrieval
+  hosts: localhost
   tasks:
     - include_tasks: get_kv_secrets.yml
       vars:
