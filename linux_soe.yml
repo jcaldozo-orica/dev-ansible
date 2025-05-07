@@ -6,6 +6,18 @@
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
+     - name: gather secrets (linuxSoeUri)
+       include_tasks: get_kv_secrets.yml
+       delegate_to: localhost
+       vars:
+         secretName: "linuxSoeUri"
+       register: linuxSoeUri
+     - name: gather secrets (falcon)
+       include_tasks: get_kv_secrets.yml
+       delegate_to: localhost
+       vars:
+         secretName: "oricacscid"
+       register: oricacscid
      - name: download azcopy
        become: true
        ansible.builtin.get_url:
@@ -14,9 +26,9 @@
          mode: "0755"
      - name: download soe files via azcopy
        become: true
-       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "https://stshareddevaue01.blob.core.windows.net/soe?sp=rl&st=2025-04-28T07:21:21Z&se=2028-04-28T15:21:21Z&spr=https&sv=2024-11-04&sr=c&sig=zlxFO9GYhViuoENKd7jnxD6QEFMtojutmJ0S26ayjrk%3D" "{{ linuxSoePath }}"
+       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{linuxSoeUri}" "{{ linuxSoePath }}"
  - hosts: os_Ubuntu
-   gather_facts: False
+   gather_facts: True
    tasks:
 
 
@@ -82,37 +94,37 @@
           enabled: true
           name: falcon-sensor
         when: ansible_facts.services['falcon-sensor.service'].state != 'running'
-    #install qualys
-      - name: install qualys deb package
-        become: true
-        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
-      - name: configure qualys CID
-        become: true
-        shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
-        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
-      - name: enable and start falcon-sensor
-        ansible.builtin.systemd_service:
-          state: started
-          enabled: true
-          name: qualys
-        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
-    #install servicenow acc
-      - name: Install ServiceNow ACC via shell
-        become: true
-        shell: "ACC_API_KEY='{{accApiKey}}' ACC_MID='{{accMid}}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
-        when: ansible_facts.services['acc.service'].state != 'running'
+    # #install qualys
+    #   - name: install qualys deb package
+    #     become: true
+    #     ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
+    #   - name: configure qualys CID
+    #     become: true
+    #     shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
+    #     when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+    #   - name: enable and start falcon-sensor
+    #     ansible.builtin.systemd_service:
+    #       state: started
+    #       enabled: true
+    #       name: qualys
+    #     when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+    # #install servicenow acc
+    #   - name: Install ServiceNow ACC via shell
+    #     become: true
+    #     shell: "ACC_API_KEY='{{accApiKey}}' ACC_MID='{{accMid}}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
+    #     when: ansible_facts.services['acc.service'].state != 'running'
     
-    #install illumio
-      - name: Install Illumio via shell
-        become: true
-        shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{illumioAcode}}'"
-        # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
-      - name: enable and start illumio-ven
-        ansible.builtin.systemd_service:
-          state: started
-          enabled: true
-          name: illumio-ven
-        when: ansible_facts.services['illumio-ven.service'].state != 'running'    
+    # #install illumio
+    #   - name: Install Illumio via shell
+    #     become: true
+    #     shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{illumioAcode}}'"
+    #     # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
+    #   - name: enable and start illumio-ven
+    #     ansible.builtin.systemd_service:
+    #       state: started
+    #       enabled: true
+    #       name: illumio-ven
+    #     when: ansible_facts.services['illumio-ven.service'].state != 'running'    
     #configure to allow Icinga
 
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
