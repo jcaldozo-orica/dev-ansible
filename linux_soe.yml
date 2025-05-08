@@ -14,6 +14,8 @@
        vars:
          secretName: "oricacscid"
        register: oricacscid
+     - debug:
+        msg: linuxSoeUri is {{ linuxSoeUri }}
  - name: talk to all hosts just so we can learn about them
    hosts: dev
    gather_facts: yes
