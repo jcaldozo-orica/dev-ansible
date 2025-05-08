@@ -1,7 +1,8 @@
 ---
- - name: control node to run keyvault retrieval
+
+ - name: talk to all hosts just so we can learn about them
    hosts: localhost
-   connection: local
+   gather_facts: no
    tasks:
      - name: gather secrets (linuxSoeUri)
        include_tasks: get_kv_secrets.yml
@@ -15,11 +16,24 @@
        register: oricacscid
  - name: talk to all hosts just so we can learn about them
    hosts: dev
+   gather_facts: yes
    tasks:
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
-
+     - name: Classify hosts depending on their OS distribution
+       group_by:
+         key: os_{{ ansible_facts['distribution'] }}
+     - name: gather secrets (linuxSoeUri)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "linuxSoeUri"
+       register: linuxSoeUri
+     - name: gather secrets (falcon)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "oricacscid"
+       register: oricacscid
      - name: download azcopy
        become: true
        ansible.builtin.get_url:
