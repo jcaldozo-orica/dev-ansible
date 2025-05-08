@@ -204,7 +204,6 @@
           mode: "0755"
       - name: Install ServiceNow ACC via shell
         become: true
-        ansible.builtin.script:
         shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '{{ linuxSoePath }}/install_agent'"
         when: ansible_facts['services']['acc.service']['state']| default('not-found') != 'running'
     
