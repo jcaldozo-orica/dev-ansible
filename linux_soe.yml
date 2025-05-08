@@ -24,7 +24,8 @@
          mode: "0755"
      - name: download soe files via azcopy
        become: true
-       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{linuxSoeUri}" "{{ linuxSoePath }}"
+       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
+
  - hosts: os_Ubuntu
    gather_facts: True
    tasks:
