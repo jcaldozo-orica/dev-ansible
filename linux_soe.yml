@@ -8,14 +8,23 @@
        include_tasks: get_kv_secrets.yml
        vars:
          secretName: "linuxSoeUri"
-       register: linuxSoeUri
+       register: kvValue
+     - name: declare falcon cid
+       ansible.builtin.set_fact:
+         linuxSoeUri: "{{ kvValue }}"
+     - debug:
+        msg: linuxSoeUri is {{ linuxSoeUri }}
      - name: gather secrets (falcon)
        include_tasks: get_kv_secrets.yml
        vars:
          secretName: "oricacscid"
-       register: oricacscid
+       register: kvValue
+     - name: declare falcon cid
+       ansible.builtin.set_fact:
+         oricacscid: "{{ kvValue }}"
      - debug:
-        msg: linuxSoeUri is {{ linuxSoeUri }}
+        msg: oricacscid is {{ oricacscid }}
+
  - name: talk to all hosts just so we can learn about them
    hosts: dev
    gather_facts: yes
