@@ -22,7 +22,6 @@
        ansible.builtin.set_fact:
          oricacscid: "{{ kvValue }}"
 
-     #, , , , , 
      - name: gather secrets (qualysCid)
        include_tasks: get_kv_secrets.yml
        vars:
@@ -31,7 +30,9 @@
      - name: declare qualysCid 
        ansible.builtin.set_fact:
          qualysCid: "{{ kvValue }}"
-
+     - name: debug
+       debug:
+         msg: "qualysCid is {{ qualysCid }}"
      - name: gather secrets (qualysActId)
        include_tasks: get_kv_secrets.yml
        vars:
@@ -90,7 +91,9 @@
      accMid: "{{ hostvars['localhost']['accMid'] }}"
      illumioAcode: "{{ hostvars['localhost']['illumioAcode'] }}"
    tasks:
-
+     - name: debug
+       debug:
+         msg: "qualysCid is {{ qualysCid }}"
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
