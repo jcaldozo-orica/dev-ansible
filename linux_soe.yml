@@ -12,8 +12,7 @@
      - name: declare falcon cid
        ansible.builtin.set_fact:
          linuxSoeUri: "{{ kvValue }}"
-     - debug:
-        msg: linuxSoeUri is {{ linuxSoeUri }}
+
      - name: gather secrets (falcon)
        include_tasks: get_kv_secrets.yml
        vars:
@@ -22,8 +21,6 @@
      - name: declare falcon cid
        ansible.builtin.set_fact:
          oricacscid: "{{ kvValue }}"
-     - debug:
-        msg: oricacscid is {{ oricacscid }}
 
  - name: talk to all hosts just so we can learn about them
    hosts: dev
@@ -32,8 +29,7 @@
      linuxSoeUri: "{{ hostvars['localhost']['linuxSoeUri'] }}"
      oricacscid: "{{ hostvars['localhost']['oricacscid'] }}"
    tasks:
-     - debug:
-        msg: linuxSoeUri is {{ linuxSoeUri }}
+
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
@@ -89,7 +85,7 @@
           state: present
       - name: install nxlog deb package
         become: true
-        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_*ubuntu22*.deb"
+        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb"
       #config goes here
 
     #install servicenow agent
