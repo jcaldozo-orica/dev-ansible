@@ -202,6 +202,12 @@
           url:  "https://orica2.service-now.com/api/sn_agent/agents/install_agent"
           dest: "{{ linuxSoePath }}/install_agent"
           mode: "0755"
+      - name: Install a list of packages
+        become: true
+        ansible.builtin.apt:
+          pkg:
+          - unzip
+          state: present
       - name: Install ServiceNow ACC via shell
         become: true
         shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '{{ linuxSoePath }}/install_agent'"
