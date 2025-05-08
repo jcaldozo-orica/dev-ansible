@@ -171,14 +171,14 @@
       - name: configure CID
         become: true
         shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ oricacscid }}"
-        when: ansible_facts.services['falcon-sensor.service'].state != 'running'
+        when: ansible_facts['services']['falcon-sensor.service']['state']| default('not-found') != 'running'
       - name: enable and start falcon-sensor
         become: true
         ansible.builtin.systemd_service:
           state: started
           enabled: true
           name: falcon-sensor
-        when: ansible_facts['services']['falcon-sensor.service']['status']| default('not-found') != 'not-found'
+        when: ansible_facts['services']['falcon-sensor.service']['state']| default('not-found') != 'running'
     #install qualys
       - name: install qualys deb package
         become: true
@@ -188,18 +188,18 @@
       - name: configure qualys CID
         become: true
         shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId={{ qualysCid }} ActivationId={{ qualysActId }} ServerUri={{ qualysUri }}"
-        when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
+        when: ansible_facts['services']['qualys-cloud-agent.service']['state']| default('not-found')!='running'
       - name: enable and start qualys
         ansible.builtin.systemd_service:
           state: started
           enabled: true
           name: qualys-cloud-agent
-        when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
+        when: ansible_facts['services']['qualys-cloud-agent.service']['state']| default('not-found') != 'running'
     #install servicenow acc
       - name: Install ServiceNow ACC via shell
         become: true
         shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
-        when: ansible_facts['services']['acc.service']['status']| default('not-found') == 'not-found'
+        when: ansible_facts['services']['acc.service']['state']| default('not-found') != 'running'
     
     #install illumio
       - name: Install Illumio via shell
@@ -214,8 +214,7 @@
           state: started
           enabled: true
           name: illumio-ven
-        when: "'illumio-ven' in ansible_facts.packages and ansible_facts['services']['illumio-ven.service']['status']| default('not-found') not in ['not-found','running']"
-
+        when: "'illumio-ven' in ansible_facts.packages and ansible_facts['services']['illumio-ven.service']['state']| default('not-found') != 'running'
     #configure to allow Icinga
 
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
