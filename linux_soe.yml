@@ -29,7 +29,7 @@
      - name: download azcopy
        become: true
        ansible.builtin.get_url:
-         url:  {{ azcopyUrl }}
+         url:  "{{ azcopyUrl }}"
          dest: "/usr/bin/azcopy"
          mode: "0755"
      - name: download soe files via azcopy
