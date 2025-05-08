@@ -24,7 +24,7 @@
      - name: download azcopy
        become: true
        ansible.builtin.get_url:
-         url:  https://stshareddevaue01.blob.core.windows.net/soe/linux/azcopy?sp=r&st=2025-04-28T07:04:10Z&se=2028-04-28T15:04:10Z&spr=https&sv=2024-11-04&sr=b&sig=PR%2BGd88HkxGEAtp00SwYBmbueJqSHOLl1gFn1XGdTkU%3D
+         url:  {{ azcopy }}
          dest: "/usr/bin/azcopy"
          mode: "0755"
      - name: download soe files via azcopy
