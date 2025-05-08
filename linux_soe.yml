@@ -17,7 +17,12 @@
  - name: talk to all hosts just so we can learn about them
    hosts: dev
    gather_facts: yes
+   vars:
+     linuxSoeUri: "{{ hostvars['localhost']['linuxSoeUri'] }}"
+     oricacscid: "{{ hostvars['localhost']['oricacscid'] }}"
    tasks:
+     - debug:
+        msg: linuxSoeUri is {{ linuxSoeUri }}
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
@@ -29,7 +34,7 @@
          mode: "0755"
      - name: download soe files via azcopy
        become: true
-       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ hostvars['localhost']['linuxSoeUri'] }}" "{{ linuxSoePath }}"
+       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
 
  - hosts: os_Ubuntu
    gather_facts: True
