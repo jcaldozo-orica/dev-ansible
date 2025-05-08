@@ -109,6 +109,7 @@
         shell: "/opt/CrowdStrike/falconctl -s -f --cid='{{ hostvars['localhost']['oricacscid'] }}'"
         when: ansible_facts.services['falcon-sensor.service'].state != 'running'
       - name: enable and start falcon-sensor
+        become: true
         ansible.builtin.systemd_service:
           state: started
           enabled: true
