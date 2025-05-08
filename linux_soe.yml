@@ -110,6 +110,9 @@
 
       - name: Populate service facts
         ansible.builtin.service_facts:
+      - name: Gather the package facts
+        ansible.builtin.package_facts:
+          manager: auto
     #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
       - name: Copy CA certificates to target hosts
         become: true
@@ -183,9 +186,9 @@
           deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
       - name: configure qualys CID
         become: true
-        shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
+        shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{ qualysCid }}' ActivationId='{{ qualysActId }}' ServerUri='{{ qualysUri }}'"
         when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
-      - name: enable and start falcon-sensor
+      - name: enable and start qualys
         ansible.builtin.systemd_service:
           state: started
           enabled: true
@@ -194,20 +197,23 @@
     #install servicenow acc
       - name: Install ServiceNow ACC via shell
         become: true
-        shell: "ACC_API_KEY='{{accApiKey}}' ACC_MID='{{accMid}}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
-        when: ansible_facts.services['acc.service'].state != 'running'
+        shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
+        when: ansible_facts['services']['acc.service']['status']| default('not-found') not in ['not-found','running']
     
     #install illumio
       - name: Install Illumio via shell
         become: true
-        shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{illumioAcode}}'"
+        shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{ illumioAcode }}'"
+        when: "'illumio-ven' not in ansible_facts.packages"
+
         # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
       - name: enable and start illumio-ven
         ansible.builtin.systemd_service:
           state: started
           enabled: true
           name: illumio-ven
-        when: ansible_facts.services['illumio-ven.service'].state != 'running'    
+        when: ansible_facts['services']['illumio-ven.service']['status']| default('not-found') not in ['not-found','running']
+
     #configure to allow Icinga
 
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
