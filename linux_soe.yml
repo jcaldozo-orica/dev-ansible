@@ -53,7 +53,7 @@
      - name: gather secrets (accApiKey)
        include_tasks: get_kv_secrets.yml
        vars:
-         secretName: "vars"
+         secretName: "accApiKey"
        register: kvValue
      - name: declare accApiKey 
        ansible.builtin.set_fact:
