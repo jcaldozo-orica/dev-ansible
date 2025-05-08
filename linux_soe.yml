@@ -85,13 +85,15 @@
           state: present
       - name: install nxlog deb package
         become: true
-        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb"
+        ansible.builtin.apt: 
+          deb: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb"
       #config goes here
 
     #install servicenow agent
       - name: install snowagent deb package
         become: true
-        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/Orica-Linux-snowagent-7.0.0-x64.deb"
+        ansible.builtin.apt: 
+          deb: "{{ linuxSoePath }}/soe/linux/deb/Orica-Linux-snowagent-7.0.0-x64.deb"
       - name: update snow configuration
         shell: "/opt/snow/snowcron -f /opt/snow/snowcron.conf /opt/snow/snowagent"
         become: true
@@ -99,7 +101,8 @@
     #install crowdstrike
       - name: install falcon deb package
         become: true
-        ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/falcon-sensor_7.06.0-16108_amd64.deb"
+        ansible.builtin.apt: 
+          deb: "{{ linuxSoePath }}/soe/linux/deb/falcon-sensor_7.06.0-16108_amd64.deb"
       - name: configure CID
         become: true
         shell: "/opt/CrowdStrike/falconctl -s -f --cid='{{ hostvars['localhost']['oricacscid'] }}'"
@@ -113,7 +116,8 @@
     # #install qualys
     #   - name: install qualys deb package
     #     become: true
-    #     ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
+    #     ansible.builtin.apt: 
+    #       deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
     #   - name: configure qualys CID
     #     become: true
     #     shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
