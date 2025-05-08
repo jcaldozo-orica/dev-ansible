@@ -83,6 +83,12 @@
    vars:
      linuxSoeUri: "{{ hostvars['localhost']['linuxSoeUri'] }}"
      oricacscid: "{{ hostvars['localhost']['oricacscid'] }}"
+     qualysCid: "{{ hostvars['localhost']['qualysCid'] }}"
+     qualysActId: "{{ hostvars['localhost']['qualysActId'] }}"
+     qualysUri: "{{ hostvars['localhost']['qualysUri'] }}"
+     accApiKey: "{{ hostvars['localhost']['accApiKey'] }}"
+     accMid: "{{ hostvars['localhost']['accMid'] }}"
+     illumioAcode: "{{ hostvars['localhost']['illumioAcode'] }}"
    tasks:
 
      - name: Classify hosts depending on their OS distribution
