@@ -9,7 +9,7 @@
        vars:
          secretName: "linuxSoeUri"
        register: kvValue
-     - name: declare falcon cid
+     - name: declare soe uri cid
        ansible.builtin.set_fact:
          linuxSoeUri: "{{ kvValue }}"
 
@@ -21,6 +21,61 @@
      - name: declare falcon cid
        ansible.builtin.set_fact:
          oricacscid: "{{ kvValue }}"
+
+     #, , , , , 
+     - name: gather secrets (qualysCid)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "qualysCid"
+       register: kvValue
+     - name: declare qualysCid 
+       ansible.builtin.set_fact:
+         qualysCid: "{{ kvValue }}"
+
+     - name: gather secrets (qualysActId)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "qualysActId"
+       register: kvValue
+     - name: declare qualysActId 
+       ansible.builtin.set_fact:
+         qualysActId: "{{ kvValue }}"
+
+     - name: gather secrets (qualysUri)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "qualysUri"
+       register: kvValue
+     - name: declare qualysUri 
+       ansible.builtin.set_fact:
+         qualysUri: "{{ kvValue }}"
+
+     - name: gather secrets (accApiKey)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "vars"
+       register: kvValue
+     - name: declare accApiKey 
+       ansible.builtin.set_fact:
+         accApiKey: "{{ kvValue }}"
+
+     - name: gather secrets (accMid)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "accMid"
+       register: kvValue
+     - name: declare accMid 
+       ansible.builtin.set_fact:
+         accMid: "{{ kvValue }}"
+
+     - name: gather secrets (illumioAcode)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "illumioAcode"
+       register: kvValue
+     - name: declare illumioAcode 
+       ansible.builtin.set_fact:
+         illumioAcode: "{{ kvValue }}"
 
  - name: talk to all hosts just so we can learn about them
    hosts: dev
@@ -115,38 +170,38 @@
           enabled: true
           name: falcon-sensor
         when: ansible_facts['services']['falcon-sensor.service']['status']| default('not-found') != 'not-found'
-    # #install qualys
-    #   - name: install qualys deb package
-    #     become: true
-    #     ansible.builtin.apt: 
-    #       deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
-    #   - name: configure qualys CID
-    #     become: true
-    #     shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
-    #     when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
-    #   - name: enable and start falcon-sensor
-    #     ansible.builtin.systemd_service:
-    #       state: started
-    #       enabled: true
-    #       name: qualys
-    #     when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
-    # #install servicenow acc
-    #   - name: Install ServiceNow ACC via shell
-    #     become: true
-    #     shell: "ACC_API_KEY='{{accApiKey}}' ACC_MID='{{accMid}}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
-    #     when: ansible_facts.services['acc.service'].state != 'running'
+    #install qualys
+      - name: install qualys deb package
+        become: true
+        ansible.builtin.apt: 
+          deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
+      - name: configure qualys CID
+        become: true
+        shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
+        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+      - name: enable and start falcon-sensor
+        ansible.builtin.systemd_service:
+          state: started
+          enabled: true
+          name: qualys
+        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+    #install servicenow acc
+      - name: Install ServiceNow ACC via shell
+        become: true
+        shell: "ACC_API_KEY='{{accApiKey}}' ACC_MID='{{accMid}}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
+        when: ansible_facts.services['acc.service'].state != 'running'
     
-    # #install illumio
-    #   - name: Install Illumio via shell
-    #     become: true
-    #     shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{illumioAcode}}'"
-    #     # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
-    #   - name: enable and start illumio-ven
-    #     ansible.builtin.systemd_service:
-    #       state: started
-    #       enabled: true
-    #       name: illumio-ven
-    #     when: ansible_facts.services['illumio-ven.service'].state != 'running'    
+    #install illumio
+      - name: Install Illumio via shell
+        become: true
+        shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code '{{illumioAcode}}'"
+        # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
+      - name: enable and start illumio-ven
+        ansible.builtin.systemd_service:
+          state: started
+          enabled: true
+          name: illumio-ven
+        when: ansible_facts.services['illumio-ven.service'].state != 'running'    
     #configure to allow Icinga
 
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
