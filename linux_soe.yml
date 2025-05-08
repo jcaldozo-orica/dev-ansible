@@ -7,14 +7,14 @@
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
      - name: gather secrets (linuxSoeUri)
+       hosts: localhost
        include_tasks: get_kv_secrets.yml
-       delegate_to: localhost
        vars:
          secretName: "linuxSoeUri"
        register: linuxSoeUri
      - name: gather secrets (falcon)
+       hosts: localhost
        include_tasks: get_kv_secrets.yml
-       delegate_to: localhost
        vars:
          secretName: "oricacscid"
        register: oricacscid
