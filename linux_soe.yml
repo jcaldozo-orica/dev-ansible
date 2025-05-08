@@ -184,6 +184,7 @@
         become: true
         ansible.builtin.apt: 
           deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
+        when: "'qualys-cloud-agent' not in ansible_facts.packages"
       - name: configure qualys CID
         become: true
         shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId={{ qualysCid }} ActivationId={{ qualysActId }} ServerUri={{ qualysUri }}"
