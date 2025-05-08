@@ -192,12 +192,12 @@
         ansible.builtin.systemd_service:
           state: started
           enabled: true
-          name: qualys
+          name: qualys-cloud-agent
         when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
     #install servicenow acc
       - name: Install ServiceNow ACC via shell
         become: true
-        shell: "ACC_API_KEY={{ accApiKey }} ACC_MID={{ accMid }} bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
+        shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '$(curl -L https://orica2.service-now.com/api/sn_agent/agents/install_agent)'"
         when: ansible_facts['services']['acc.service']['status']| default('not-found') not in ['not-found','running']
     
     #install illumio
