@@ -121,7 +121,7 @@
         shell: "update-ca-certificates"
         become: true
     #configure ori.orica.net dns suffix
-      - name: Install a list of packages
+      - name: Install list of packages for dns suffix
         become: true
         ansible.builtin.apt:
           pkg:
@@ -184,13 +184,13 @@
       - name: configure qualys CID
         become: true
         shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId='{{qualysCid}}' ActivationId='{{qualysActId}}' ServerUri='{{qualysUri}}'"
-        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+        when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
       - name: enable and start falcon-sensor
         ansible.builtin.systemd_service:
           state: started
           enabled: true
           name: qualys
-        when: ansible_facts.services['qualys-cloud-agent.service'].state != 'running'
+        when: ansible_facts['services']['qualys-cloud-agent.service']['status']| default('not-found') not in ['not-found','running']
     #install servicenow acc
       - name: Install ServiceNow ACC via shell
         become: true
