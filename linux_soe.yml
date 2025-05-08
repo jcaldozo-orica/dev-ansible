@@ -21,19 +21,6 @@
      - name: Classify hosts depending on their OS distribution
        group_by:
          key: os_{{ ansible_facts['distribution'] }}
-     - name: Classify hosts depending on their OS distribution
-       group_by:
-         key: os_{{ ansible_facts['distribution'] }}
-     - name: gather secrets (linuxSoeUri)
-       include_tasks: get_kv_secrets.yml
-       vars:
-         secretName: "linuxSoeUri"
-       register: linuxSoeUri
-     - name: gather secrets (falcon)
-       include_tasks: get_kv_secrets.yml
-       vars:
-         secretName: "oricacscid"
-       register: oricacscid
      - name: download azcopy
        become: true
        ansible.builtin.get_url:
