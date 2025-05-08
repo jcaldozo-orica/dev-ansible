@@ -157,6 +157,7 @@
           dest: /etc/ssh/banner.txt
           remote_src: yes
       - name: Configure sshd_config with banner and PermitRootLogin
+        become: true
         ansible.builtin.lineinfile:
           path: /etc/ssh/sshd_config
           state: present
