@@ -29,7 +29,7 @@
          mode: "0755"
      - name: download soe files via azcopy
        become: true
-       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
+       ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ hostvars['localhost']['linuxSoeUri'] }}" "{{ linuxSoePath }}"
 
  - hosts: os_Ubuntu
    gather_facts: True
@@ -90,7 +90,7 @@
         ansible.builtin.apt: "{{ linuxSoePath }}/soe/linux/deb/falcon-sensor_7.06.0-16108_amd64.deb"
       - name: configure CID
         become: true
-        shell: "/opt/CrowdStrike/falconctl -s -f --cid='{{ oricacscid }}'"
+        shell: "/opt/CrowdStrike/falconctl -s -f --cid='{{ hostvars['localhost']['oricacscid'] }}'"
         when: ansible_facts.services['falcon-sensor.service'].state != 'running'
       - name: enable and start falcon-sensor
         ansible.builtin.systemd_service:
