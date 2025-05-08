@@ -47,7 +47,8 @@
    gather_facts: True
    tasks:
 
-
+      - name: Populate service facts
+        ansible.builtin.service_facts:
     #copy zscaler, root ca, sub1 ca, sub2 ca and update CA store
       - name: Copy CA certificates to target hosts
         become: true
@@ -112,7 +113,7 @@
           state: started
           enabled: true
           name: falcon-sensor
-        when: ansible_facts.services['falcon-sensor.service'].state != 'running'
+        when: ansible_facts['services']['falcon-sensor.service']['status']| default('not-found') != 'not-found'
     # #install qualys
     #   - name: install qualys deb package
     #     become: true
