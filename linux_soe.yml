@@ -86,7 +86,7 @@
       - name: install nxlog deb package
         become: true
         ansible.builtin.apt: 
-          deb: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb"
+          deb: "{{ linuxSoePath }}"/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb
       #config goes here
 
     #install servicenow agent
