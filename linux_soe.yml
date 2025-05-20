@@ -292,7 +292,7 @@
         become: true
         ansible.builtin.file:
           src: /usr/lib/nagios
-          dest: /usr/lib64/
+          dest: /usr/lib64/nagios
           state: link
       - name: Install check_systemd via pip
         ansible.builtin.pip:
