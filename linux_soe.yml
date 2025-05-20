@@ -79,20 +79,20 @@
      - name: gather secrets (joindomain-pw)
        include_tasks: get_kv_secrets.yml
        vars:
-         secretName: "joindomain-pw"
+         secretName: "joindomainpw"
        register: kvValue
-     - name: declare joindomain-pw 
+     - name: declare joindomainpw 
        ansible.builtin.set_fact:
-         joindomain-pw: "{{ kvValue }}"
+         joindomainpw: "{{ kvValue }}"
 
      - name: gather secrets (joindomain-user)
        include_tasks: get_kv_secrets.yml
        vars:
-         secretName: "joindomain-user"
+         secretName: "joindomainuser"
        register: kvValue
-     - name: declare joindomain-user 
+     - name: declare joindomainuser 
        ansible.builtin.set_fact:
-         joindomain-user: "{{ kvValue }}"
+         joindomainuser: "{{ kvValue }}"
 
  - name: talk to all hosts just so we can learn about them
    hosts: dev
@@ -124,8 +124,8 @@
      accApiKey: "{{ hostvars['localhost']['accApiKey'] }}"
      accMid: "{{ hostvars['localhost']['accMid'] }}"
      illumioAcode: "{{ hostvars['localhost']['illumioAcode'] }}"
-     joindomain-user: "{{ hostvars['localhost']['joindomain-user'] }}"
-     joindomain-pw: "{{ hostvars['localhost']['joindomain-pw'] }}"
+     joindomainuser: "{{ hostvars['localhost']['joindomainuser'] }}"
+     joindomainpw: "{{ hostvars['localhost']['joindomainpw'] }}"
    tasks:
 
       - name: Populate service facts
@@ -353,7 +353,7 @@
         when: realm_list_output.rc == 0 or realm_list_output.stdout_lines
       - name: execute realm shell
         become: true
-        shell: /bin/bash -c "echo {{ joindomain-pw }} | realm join --verbose --user={{ joindomain-user }} --computer-ou='OU=Member Servers,DC=ori,DC=orica,DC=net' ori.orica.net"
+        shell: /bin/bash -c "echo {{ joindomainpw }} | realm join --verbose --user={{ joindomainuser }} --computer-ou='OU=Member Servers,DC=ori,DC=orica,DC=net' ori.orica.net"
         register: join_output
         no_log: True
         ignore_errors: yes
