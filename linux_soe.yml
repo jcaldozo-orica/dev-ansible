@@ -394,15 +394,15 @@
           state: present
           regexp: '^access_provider = ad'
           line: 'access_provider = simple'
-      - name: execute realm shell
-        become: true
-        shell: /bin/bash -c "hostname"
-        register: hostname
+      # - name: execute realm shell
+      #   become: true
+      #   shell: /bin/bash -c "hostname"
+      #   register: hostname
       - name: Add simple_allow_groups line
         lineinfile:
           path: /etc/sssd/sssd.conf
           regexp: '^simple_allow_groups'
-          line: 'simple_allow_groups = Operations_Servers_Linux, {{ hostname }}-Support' #AD groups
+          line: "simple_allow_groups = Operations_Servers_Linux, {{ ansible_nodename | split('.') | first }}-Support" #AD groups
           state: present
 
       - name: Add use_fully_qualified_names line
@@ -435,24 +435,27 @@
       - name: execute mkhomedir
         shell: pam-auth-update --enable mkhomedir
         ignore_errors: yes
-      - name: add systemadmin to sudo
+      - name: add operations_servers_linux to sudo
         become: true
         ansible.builtin.lineinfile:
           path: /etc/sudoers.d/orica
+          regexp: '^%Operations_Servers_Linux@ori.orica.net'
           line:  '%Operations_Servers_Linux@ori.orica.net ALL = (ALL) NOPASSWD:ALL'
           create: yes
           validate: /usr/sbin/visudo -cf %s
-      - name: add systemadmin to sudo
+      - name: add support to sudo
         become: true
         ansible.builtin.lineinfile:
           path: /etc/sudoers.d/orica
-          line:  '%{{ hostname }}-Support ALL = (ALL) NOPASSWD:ALL'
+          regexp: "^%{{ ansible_nodename | split('.') | first }}-Support"
+          line:  "%{{ ansible_nodename | split('.') | first }}-Support ALL = (ALL) NOPASSWD:ALL"
           create: yes
           validate: /usr/sbin/visudo -cf %s
-      - name: add systemadmin to sudo
+      - name: add  operations_servers_linux(no suffix) to sudo
         become: true
         ansible.builtin.lineinfile:
           path: /etc/sudoers.d/orica
+          regexp: '^%Operations_Servers_Linux ALL = (ALL) NOPASSWD:ALL'
           line:  '%Operations_Servers_Linux ALL = (ALL) NOPASSWD:ALL'
           create: yes
           validate: /usr/sbin/visudo -cf %s
