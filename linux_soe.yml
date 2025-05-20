@@ -298,7 +298,7 @@
       - name: download check_mem.pl
         become: true
         ansible.builtin.get_url:
-          url:  "raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl"
+          url:  "https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl"
           dest: "/usr/lib/nagios/plugins/check_mem.pl"
           mode: "0755"
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
