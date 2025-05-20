@@ -290,7 +290,10 @@
           state: present
       - name: symlink nagios lib
         become: true
-        shell: "ln -s /usr/lib64/nagios /usr/lib/nagios"
+        ansible.builtin.file:
+          src: /usr/lib64/nagios
+          dest: /usr/lib/nagios
+          state: link
       - name: Install check_systemd via pip
         ansible.builtin.pip:
           name: check_systemd
