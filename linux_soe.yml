@@ -319,12 +319,14 @@
           regexp: '^#Banner none'
           line: 'Banner /etc/ssh/banner.txt'
       - name: enable and start sshd
+        become: true
         ansible.builtin.systemd_service:
           state: restarted
           name: sshd
 
     #configure AD login
       - name: Verify join operation
+        become: true
         command: realm list
         register: realm_list_output
         ignore_errors: true
