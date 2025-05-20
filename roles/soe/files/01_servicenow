@@ -1,0 +1,4 @@
+User_Alias ACC_USERS = servicenow
+Cmnd_Alias ACC_CMD = /sbin/dmidecode, /sbin/ss
+ACC_USERS ALL = (root) NOPASSWD:ACC_CMD
+Defaults:ACC_USERS !requiretty

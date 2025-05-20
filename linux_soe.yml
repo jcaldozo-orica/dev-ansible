@@ -1,6 +1,6 @@
 ---
 
- - name: talk to all hosts just so we can learn about them
+ - name: control node tasks
    hosts: localhost
    gather_facts: no
    tasks:
@@ -76,6 +76,24 @@
        ansible.builtin.set_fact:
          illumioAcode: "{{ kvValue }}"
 
+     - name: gather secrets (joindomain-pw)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "joindomain-pw"
+       register: kvValue
+     - name: declare joindomain-pw 
+       ansible.builtin.set_fact:
+         joindomain-pw: "{{ kvValue }}"
+
+     - name: gather secrets (joindomain-user)
+       include_tasks: get_kv_secrets.yml
+       vars:
+         secretName: "joindomain-user"
+       register: kvValue
+     - name: declare joindomain-user 
+       ansible.builtin.set_fact:
+         joindomain-user: "{{ kvValue }}"
+
  - name: talk to all hosts just so we can learn about them
    hosts: dev
    gather_facts: yes
@@ -106,6 +124,8 @@
      accApiKey: "{{ hostvars['localhost']['accApiKey'] }}"
      accMid: "{{ hostvars['localhost']['accMid'] }}"
      illumioAcode: "{{ hostvars['localhost']['illumioAcode'] }}"
+     joindomain-user: "{{ hostvars['localhost']['joindomain-user'] }}"
+     joindomain-pw: "{{ hostvars['localhost']['joindomain-pw'] }}"
    tasks:
 
       - name: Populate service facts
@@ -212,7 +232,12 @@
         become: true
         shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '{{ linuxSoePath }}/install_agent'"
         when: ansible_facts['services']['acc.service']['state']| default('not-found') != 'running'
-    
+      - name: download 01_servicenow sudoer file
+        become: true
+        ansible.builtin.get_url:
+          url:  "{{ serviceNowSudoerUrl }}"
+          dest: "/etc/sudoers.d/01_servicenow"
+          mode: "0440"
     #install illumio
       - name: Install Illumio via shell
         become: true
@@ -228,7 +253,54 @@
           name: illumio-ven
         when: "'illumio-ven' in ansible_facts.packages and ansible_facts['services']['illumio-ven.service']['state']| default('not-found') != 'running'"
     #configure to allow Icinga
-
+      - name: create systemadmin group
+        become: true
+        ansible.builtin.group:
+          name: systemadmin
+          state: present
+          gid: 650
+      - name: add systemadmin to sudo
+        become: true
+        ansible.builtin.lineinfile:
+          path: /etc/sudoers.d/orica
+          line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
+          create: yes
+          validate: /usr/sbin/visudo -cf %s
+      - name: create nagios user
+        become: true
+        ansible.builtin.user:
+          name: nagios
+          comment: icinga user
+          shell: /bin/bash
+          uid: 1199
+          group: systemadmin
+      - name: Set nagios authorized keys taken from url
+        become: true
+        ansible.posix.authorized_key:
+          user: nagios
+          state: present
+          key: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/nagios.key
+      - name: Install a list of packages for Icinga/Nagios
+        become: true
+        ansible.builtin.apt:
+          pkg:
+          - monitoring-plugins-standard
+          - monitoring-plugins
+          - python3-pip
+          state: present
+      - name: symlink nagios lib
+        become: true
+        shell: "ln -s /usr/lib64/nagios /usr/lib/nagios"
+      - name: Install check_systemd via pip
+        ansible.builtin.pip:
+          name: check_systemd
+          extra_args: --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org 
+      - name: download check_mem.pl
+        become: true
+        ansible.builtin.get_url:
+          url:  "raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl"
+          dest: "/usr/lib/nagios/plugins/check_mem.pl"
+          mode: "0755"
     #drop banner.txt, configure banner, PermitRootLogin no on /etc/ssh/sshd_config
       - name: Copy banner from soe directory
         become: true
@@ -243,9 +315,58 @@
           state: present
           regexp: '^#Banner none'
           line: 'Banner /etc/ssh/banner.txt'
-      
-    #configure AD login
+      - name: enable and start sshd
+        ansible.builtin.systemd_service:
+          state: restarted
+          name: sshd
 
+    #configure AD login
+      - name: Verify join operation
+        command: realm list
+        register: realm_list_output
+        ignore_errors: true
+
+      - name: Display command output
+        debug:
+          var: realm_list_output.stdout
+        when: realm_list_output.stdout_lines
+      - name: Display failure message
+        debug:
+          msg: "Failed: Not joined to a domain"
+        when: realm_list_output.rc != 0 or not realm_list_output.stdout_lines
+      - name: Install a list of packages for SSSD
+        become: true
+        ansible.builtin.apt:
+          pkg:
+          - realmd 
+          - sssd
+          - sssd-tools
+          - samba-common
+          - krb5-user
+          - packagekit
+          - samba-common-bin
+          - samba-libs
+          - adcli
+          - libnss-sss
+          - libpam-sss 
+          state: present
+        when: realm_list_output.rc == 0 or realm_list_output.stdout_lines
+      - name: execute realm shell
+        become: true
+        shell: /bin/bash -c "echo {{ joindomain-pw }} | realm join --verbose --user={{ joindomain-user }} --computer-ou='OU=Member Servers,DC=ori,DC=orica,DC=net' ori.orica.net"
+        register: join_output
+        no_log: True
+        ignore_errors: yes
+        when: realm_list_output.rc == 0 or realm_list_output.stdout_lines
+      - name: Display success message
+        debug:
+          msg: "Join successful!"
+        when: join_output.rc == 0
+
+      - name: Display error message
+        debug:
+          msg: "Join failed or already joined"
+        when: join_output.rc != 0
     #configure tmux
 
     #configure zsh
