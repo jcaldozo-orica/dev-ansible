@@ -79,7 +79,7 @@
      - name: gather secrets (joindomain-pw)
        include_tasks: get_kv_secrets.yml
        vars:
-         secretName: "joindomainpw"
+         secretName: "joindomain-pw"
        register: kvValue
      - name: declare joindomainpw 
        ansible.builtin.set_fact:
@@ -88,7 +88,7 @@
      - name: gather secrets (joindomain-user)
        include_tasks: get_kv_secrets.yml
        vars:
-         secretName: "joindomainuser"
+         secretName: "joindomain-user"
        register: kvValue
      - name: declare joindomainuser 
        ansible.builtin.set_fact:
