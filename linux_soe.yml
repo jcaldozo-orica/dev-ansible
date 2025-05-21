@@ -394,10 +394,7 @@
           state: present
           regexp: '^access_provider = ad'
           line: 'access_provider = simple'
-      # - name: execute realm shell
-      #   become: true
-      #   shell: /bin/bash -c "hostname"
-      #   register: hostname
+
       - name: Add simple_allow_groups line
         lineinfile:
           path: /etc/sssd/sssd.conf

@@ -1,5 +1,6 @@
 ---
 - hosts: dev
+  become: true
   tasks: 
 
   - name: Set authorized keys taken from url
@@ -13,14 +14,12 @@
       state: present
       gid: 650
   - name: add systemadmin to sudo
-    become: true
     ansible.builtin.lineinfile:
       path: /etc/sudoers.d/orica
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
       create: yes
       validate: /usr/sbin/visudo -cf %s
   - name: Add admin3 to systemadmin group
-    become: true
     ansible.builtin.user:
       name: admin3
       groups: systemadmin
