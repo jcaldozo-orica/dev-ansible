@@ -333,20 +333,6 @@
           name: sshd
 
     #configure AD login
-      - name: Verify join operation
-        become: true
-        command: realm list
-        register: realm_list_output
-        ignore_errors: true
-
-      - name: Display command output
-        debug:
-          var: realm_list_output.stdout
-        when: realm_list_output.stdout_lines
-      - name: Display failure message
-        debug:
-          msg: "Failed: Not joined to a domain"
-        when: realm_list_output.rc != 0 or not realm_list_output.stdout_lines
       - name: Install a list of packages for SSSD
         become: true
         ansible.builtin.apt:
@@ -363,7 +349,22 @@
           - libnss-sss
           - libpam-sss 
           state: present
-        when: realm_list_output.rc == 0 or realm_list_output.stdout_lines
+          
+      - name: Verify join operation
+        become: true
+        command: realm list
+        register: realm_list_output
+        ignore_errors: true
+
+      - name: Display command output
+        debug:
+          var: realm_list_output.stdout
+        when: realm_list_output.stdout_lines
+      - name: Display failure message
+        debug:
+          msg: "Failed: Not joined to a domain"
+        when: realm_list_output.rc != 0 or not realm_list_output.stdout_lines
+
       - name: execute realm shell
         become: true
         shell: /bin/bash -c "echo {{ joindomainpw }} | realm join --verbose --user={{ joindomainuser }} --computer-ou='OU=Member Servers,DC=ori,DC=orica,DC=net' ori.orica.net"
