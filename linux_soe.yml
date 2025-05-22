@@ -457,7 +457,10 @@
           line:  '%Operations_Servers_Linux ALL = (ALL) NOPASSWD:ALL'
           create: yes
           validate: /usr/sbin/visudo -cf %s
-      
+      - name: delete sssd cache and restart sssd
+        become: true
+        ansible.builtin.shell: systemctl stop sssd; rm -rf /var/lib/sss/db/*; systemctl start sssd;
+
     #configure tmux
 
     #configure zsh
