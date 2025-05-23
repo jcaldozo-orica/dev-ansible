@@ -54,7 +54,7 @@
 - name: Certificate| install
   include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
 
-- name: DNS: add suffix
+- name: DNS| add suffix
   include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
 
 - name: ServiceNowAgent| install 
