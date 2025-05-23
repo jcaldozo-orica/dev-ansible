@@ -1,4 +1,4 @@
 linuxSoePath: "/opt/soe"
 keyvaultUri: "https://kv-ctansible-dev-aue-01.vault.azure.net"
 azcopyUrl: "https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/azcopy"
-serviceNowSudoerUrl: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/01_servicenow
+serviceNowSudoerUrl: "https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/01_servicenow"

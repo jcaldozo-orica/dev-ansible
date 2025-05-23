@@ -1,0 +1,10 @@
+---
+- name: Certificate: Copy CA certs to target hosts
+  become: true
+  ansible.builtin.copy:
+    src:  "{{ linuxSoePath }}/soe/cert/" 
+    dest: /usr/local/share/ca-certificates/
+    remote_src: yes
+- name: Certificate: Update CA trust store
+  shell: "update-ca-certificates"
+  become: true

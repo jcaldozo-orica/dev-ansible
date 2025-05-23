@@ -1,0 +1,23 @@
+---
+- name: Illumio: gather secrets (illumioAcode)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "illumioAcode"
+  register: kvValue
+- name: Illumio: declare illumioAcode 
+  ansible.builtin.set_fact:
+    illumioAcode: "{{ kvValue }}"
+#install illumio
+- name: Illumio: Install Illumio via shell
+  become: true
+  shell: "rm -fr /opt/illumio_ven_data/tmp && umask 026 && mkdir -p /opt/illumio_ven_data/tmp && curl --tlsv1 'https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.sh&profile_id=1734' -o /opt/illumio_ven_data/tmp/pair.sh && chmod +x /opt/illumio_ven_data/tmp/pair.sh && /opt/illumio_ven_data/tmp/pair.sh --management-server scp1.illum.io:443 --activation-code {{ illumioAcode }}"
+  when: "'illumio-ven' not in ansible_facts.packages"
+  ignore_errors: True 
+
+  # when: ansible_facts.apt['illumio-ven-*.x86_64'].state != 'running'
+- name: Illumio: enable and start illumio-ven
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: illumio-ven
+  when: "'illumio-ven' in ansible_facts.packages and ansible_facts['services']['illumio-ven.service']['state']| default('not-found') != 'running'"

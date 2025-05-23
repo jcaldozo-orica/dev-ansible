@@ -1,3 +1,4 @@
 dev:
  hosts:
-  auynp466 
+  auynp466
+  auynp465 ansible_host=10.31.6.60 

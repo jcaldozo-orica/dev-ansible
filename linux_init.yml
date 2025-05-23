@@ -7,7 +7,7 @@
     ansible.posix.authorized_key:
       user: admin3
       state: present
-      key: https://raw.githubusercontent.com/jcaldozo-orica/dev-ansible/refs/heads/main/common/ansible.key
+      key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/ansible.key
   - name: create systemadmin group
     ansible.builtin.group:
       name: systemadmin

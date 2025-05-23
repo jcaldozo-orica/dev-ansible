@@ -1,0 +1,14 @@
+---
+#install and configure nxlog / point to 10.172.32.101
+- name: Nxlog: Install a list of packages
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - libapr1
+    - libdbi1
+    state: present
+- name: Nxlog: install deb package
+  become: true
+  ansible.builtin.apt: 
+    deb: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce_3.2.2329_ubuntu22_amd64.deb"
+#config goes here

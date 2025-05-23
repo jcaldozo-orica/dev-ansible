@@ -1,0 +1,53 @@
+---
+#configure to allow Icinga
+- name: Icinga: create systemadmin group
+  become: true
+  ansible.builtin.group:
+    name: systemadmin
+    state: present
+    gid: 650
+- name: Icinga: add systemadmin to sudo
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/orica
+    line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
+    create: yes
+    validate: /usr/sbin/visudo -cf %s
+- name: Icinga: create nagios user
+  become: true
+  ansible.builtin.user:
+    name: nagios
+    comment: icinga user
+    shell: /bin/bash
+    uid: 1199
+    group: systemadmin
+- name: Icinga: Set nagios authorized keys taken from url
+  become: true
+  ansible.posix.authorized_key:
+    user: nagios
+    state: present
+    key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/nagios.key
+- name: Icinga: Install a list of packages for Icinga/Nagios
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - monitoring-plugins-standard
+    - monitoring-plugins
+    - python3-pip
+    state: present
+- name: Icinga: symlink nagios lib
+  become: true
+  ansible.builtin.file:
+    src: /usr/lib/nagios
+    dest: /usr/lib64/nagios
+    state: link
+- name: Icinga: Install check_systemd via pip
+  ansible.builtin.pip:
+    name: check_systemd
+    extra_args: --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org 
+- name: Icinga: download check_mem.pl
+  become: true
+  ansible.builtin.get_url:
+    url:  "https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl"
+    dest: "/usr/lib/nagios/plugins/check_mem.pl"
+    mode: "0755"
