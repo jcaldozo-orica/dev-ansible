@@ -20,7 +20,7 @@
   register: kvValue
 - name: linuxSoeUri| declare
   ansible.builtin.set_fact:
-    linuxSoeUri: kvValue 
+    linuxSoeUri: "{{ kvValue }}" 
 - name: SOEfiles| download soe files via azcopy
   become: true
   ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
