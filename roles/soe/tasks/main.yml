@@ -10,7 +10,7 @@
 - name: download azcopy
   become: true
   ansible.builtin.get_url:
-    url:  azcopyUrl 
+    url:  "{{ azcopyUrl }}" 
     dest: "/usr/bin/azcopy"
     mode: "0755"
 - name: linuxSoeUri| gather secrets
@@ -20,7 +20,7 @@
   register: kvValue
 - name: linuxSoeUri| declare
   ansible.builtin.set_fact:
-    linuxSoeUri| kvValue 
+    linuxSoeUri: kvValue 
 - name: SOEfiles| download soe files via azcopy
   become: true
   ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false linuxSoeUri  linuxSoePath 
@@ -28,7 +28,7 @@
 - name: SSH| Copy banner from soe directory
   become: true
   ansible.builtin.copy:
-    src:  linuxSoePath }}/soe/linux/banner.txt" 
+    src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
     dest: /etc/ssh/banner.txt
     remote_src: yes
 - name: SSH| Configure sshd_config with banner and PermitRootLogin
