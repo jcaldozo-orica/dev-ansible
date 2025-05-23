@@ -23,7 +23,7 @@
     linuxSoeUri: kvValue 
 - name: SOEfiles| download soe files via azcopy
   become: true
-  ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false linuxSoeUri  linuxSoePath 
+  ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
 
 - name: SSH| Copy banner from soe directory
   become: true
