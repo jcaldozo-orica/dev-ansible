@@ -1,0 +1,7 @@
+---
+- name: TEST
+  hosts: dev
+  gather_facts: yes
+  tasks:
+    - include_role: 
+        name: soe
