@@ -1,41 +1,41 @@
 ---
-- name: Qualys: gather secrets (qualysCid)
+- name: Qualys| gather secrets (qualysCid)
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "qualysCid"
   register: kvValue
-- name: Qualys: declare qualysCid 
+- name: Qualys| declare qualysCid 
   ansible.builtin.set_fact:
     qualysCid: "{{ kvValue }}"
 
-- name: Qualys: gather secrets (qualysActId)
+- name: Qualys| gather secrets (qualysActId)
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "qualysActId"
   register: kvValue
-- name: Qualys: declare qualysActId 
+- name: Qualys| declare qualysActId 
   ansible.builtin.set_fact:
     qualysActId: "{{ kvValue }}"
 
-- name: Qualys: gather secrets (qualysUri)
+- name: Qualys| gather secrets (qualysUri)
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "qualysUri"
   register: kvValue
-- name: Qualys: declare qualysUri 
+- name: Qualys| declare qualysUri 
   ansible.builtin.set_fact:
     qualysUri: "{{ kvValue }}"
 
-- name: Qualys: install deb package
+- name: Qualys| install deb package
   become: true
   ansible.builtin.apt: 
     deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
   when: "'qualys-cloud-agent' not in ansible_facts.packages"
-- name: Qualys: configure CID
+- name: Qualys| configure CID
   become: true
   shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId={{ qualysCid }} ActivationId={{ qualysActId }} ServerUri={{ qualysUri }}"
   when: ansible_facts['services']['qualys-cloud-agent.service']['state']| default('not-found')!='running'
-- name: Qualys: enable and start service
+- name: Qualys| enable and start service
   ansible.builtin.systemd_service:
     state: started
     enabled: true

@@ -13,75 +13,75 @@
     url:  "{{ azcopyUrl }}"
     dest: "/usr/bin/azcopy"
     mode: "0755"
-- name: linuxSoeUri: gather secrets
+- name: linuxSoeUri| gather secrets
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "linuxSoeUri"
   register: kvValue
-- name: linuxSoeUri: declare
+- name: linuxSoeUri| declare
   ansible.builtin.set_fact:
-    linuxSoeUri: "{{ kvValue }}"
-- name: SOEfiles: download soe files via azcopy
+    linuxSoeUri| "{{ kvValue }}"
+- name: SOEfiles| download soe files via azcopy
   become: true
   ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
 
-- name: SSH: Copy banner from soe directory
+- name: SSH| Copy banner from soe directory
   become: true
   ansible.builtin.copy:
     src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
     dest: /etc/ssh/banner.txt
     remote_src: yes
-- name: SSH: Configure sshd_config with banner and PermitRootLogin
+- name: SSH| Configure sshd_config with banner and PermitRootLogin
   become: true
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
     regexp: '^#Banner none'
     line: 'Banner /etc/ssh/banner.txt'
-- name: SSH: Configure sshd_config with banner and PermitRootLogin
+- name: SSH| Configure sshd_config with banner and PermitRootLogin
   become: true
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
     regexp: '^#PermitRootLogin prohibit-password'
     line: 'PermitRootLogin no'
-- name: SSH: enable and start sshd
+- name: SSH| enable and start sshd
   become: true
   ansible.builtin.systemd_service:
     state: restarted
     name: sshd
 
-- name: Certificate: install
+- name: Certificate| install
   include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
 
 - name: DNS: add suffix
   include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
 
-- name: ServiceNowAgent: install 
+- name: ServiceNowAgent| install 
   include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_servicenowagent }} == 'true'
 
-- name: Crowdstrike: install 
+- name: Crowdstrike| install 
   include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_crowdstrike }} == 'true'
 
-- name: Qualys: install 
+- name: Qualys| install 
   include_tasks: qualys-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_qualys }} == 'true'
 
-- name: ServiceNowAcc: install 
+- name: ServiceNowAcc| install 
   include_tasks: servicenowacc-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_servicenowacc }} == 'true'
 
-- name: Nxlog: install 
+- name: Nxlog| install 
   include_tasks: nxlog-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_nxlog }} == 'true'
 
-- name: Illumio: install 
+- name: Illumio| install 
   include_tasks: illumio.yml
   when: {{ install_illumio }} == 'true'
 
-- name: Icinga: Allow 
+- name: Icinga| Allow 
   include_tasks: icinga-{{ ansible_facts['os_family']|lower }}.yml
   when: {{ install_icinga }} == 'true'
 

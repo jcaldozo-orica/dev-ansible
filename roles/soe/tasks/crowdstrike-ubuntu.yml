@@ -1,23 +1,23 @@
 ---
-- name: crowdstrike: gather secrets
+- name: Crowdstrike| gather secrets
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "oricacscid"
   register: kvValue
 
-- name: crowdstrike: declare falcon cid
+- name: Crowdstrike| declare falcon cid
   ansible.builtin.set_fact:
     oricacscid: "{{ kvValue }}"
 
-- name: crowdstrike: install deb package
+- name: Crowdstrike| install deb package
   become: true
   ansible.builtin.apt: 
     deb: "{{ linuxSoePath }}/soe/linux/deb/falcon-sensor_7.06.0-16108_amd64.deb"
-- name: crowdstrike: configure CID
+- name: Crowdstrike| configure CID
   become: true
   shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ oricacscid }}"
   when: ansible_facts['services']['falcon-sensor.service']['state']| default('not-found') != 'running'
-- name: crowdstrike: enable and start falcon-sensor
+- name: Crowdstrike| enable and start falcon-sensor
   become: true
   ansible.builtin.systemd_service:
     state: started
