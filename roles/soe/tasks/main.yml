@@ -61,7 +61,7 @@
 
 - name: ServiceNowAgent| install 
   include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_servicenowagent | bool or install_servicenowagent is undefined
+  when: install_servicenowagent is undefined or install_servicenowagent == true
   ignore_errors: True 
 
 - name: Crowdstrike| install 
