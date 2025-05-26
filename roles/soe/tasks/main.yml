@@ -66,35 +66,35 @@
 
 - name: Crowdstrike| install 
   include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_crowdstrike | bool or install_crowdstrike is undefined
+  when: install_crowdstrike is undefined pr install_crowdstrike == true
   ignore_errors: True 
 
 - name: Qualys| install 
   include_tasks: qualys-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_qualys | bool or install_qualys is undefined
+  when: install_qualys is undefined or install_qualys == true
   ignore_errors: True 
 
 - name: ServiceNowAcc| install 
   include_tasks: servicenowacc-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_servicenowacc | bool or install_servicenowacc is undefined
+  when: install_servicenowacc is undefined or install_servicenowacc == true
   ignore_errors: True 
 
 - name: Nxlog| install 
   include_tasks: nxlog-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_nxlog | bool or install_nxlog is undefined
+  when: install_nxlog is undefined or install_nxlog == true
   ignore_errors: True 
 
 - name: Illumio| install 
   include_tasks: illumio.yml
-  when: install_illumio | bool or install_illumio is undefined
+  when: install_illumio is undefined or install_illumio == true
   ignore_errors: True 
 
 - name: Icinga| Allow 
   include_tasks: icinga-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_icinga | bool or install_icinga is undefined
+  when: install_icinga is undefined or install_icinga == true
   ignore_errors: True 
 
 - name: Join Ori Domain 
   include_tasks: joinoridomain-{{ ansible_facts['os_family']|lower }}.yml
-  when: joinOriDomain | bool
+  when: joinOriDomain == true
   ignore_errors: True
