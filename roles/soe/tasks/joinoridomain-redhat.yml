@@ -1,0 +1,142 @@
+---
+- name: JoinOriDomain| gather secrets (joindomain-pw)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "joindomain-pw"
+  register: kvValue
+- name: declare joindomainpw 
+  ansible.builtin.set_fact:
+    joindomainpw: "{{ kvValue }}"
+
+- name: JoinOriDomain| gather secrets (joindomain-user)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "joindomain-user"
+  register: kvValue
+- name: declare joindomainuser 
+  ansible.builtin.set_fact:
+    joindomainuser: "{{ kvValue }}"
+
+    #configure AD login
+- name: JoinOriDomain| Install a list of packages for SSSD
+  become: true
+  ansible.builtin.dnf:
+    pkg:
+    - realmd 
+    - sssd
+    - adcli
+    - krb5-workstation
+    - krb5-libs
+    - oddjob
+    - oddjob-mkhomedir
+    - samba-common-tools
+    state: present
+    
+- name: JoinOriDomain| Verify join operation
+  become: true
+  command: realm list
+  register: realm_list_output
+  ignore_errors: true
+
+- name: JoinOriDomain| Display failure message
+  debug:
+    msg: "Failed: Not joined to a domain"
+  when: realm_list_output.rc != 0 or not realm_list_output.stdout_lines
+
+- name: JoinOriDomain| execute realm shell
+  become: true
+  shell: /bin/bash -c "echo {{ joindomainpw }} | realm join --verbose --user={{ joindomainuser }} --computer-ou='OU=Member Servers,DC=ori,DC=orica,DC=net' ori.orica.net"
+  register: join_output
+  no_log: True
+  ignore_errors: yes
+  when: realm_list_output.rc == 0 or realm_list_output.stdout_lines
+- name: JoinOriDomain| Display success message
+  debug:
+    msg: "Join successful!"
+  when: join_output.rc == 0
+
+- name: JoinOriDomain| Display error message
+  debug:
+    msg: "Join failed or already joined"
+  when: join_output.rc != 0
+- name: JoinOriDomain| Configure sssd with simple access provider
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sssd/sssd.conf
+    state: present
+    regexp: '^access_provider = ad'
+    line: 'access_provider = simple'
+- name: JoinOriDomain| Configure sssd with allow groups
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sssd/sssd.conf
+    state: present
+    regexp: '^access_provider = ad'
+    line: 'access_provider = simple'
+
+- name: JoinOriDomain| Add simple_allow_groups line
+  become: true
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    regexp: '^simple_allow_groups'
+    line: "simple_allow_groups = Operations_Servers_Linux, {{ ansible_nodename | split('.') | first }}-Support" #AD groups
+    state: present
+
+- name: JoinOriDomain| Add use_fully_qualified_names line
+  become: true
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    regexp: '^use_fully_qualified_names'
+    line: 'use_fully_qualified_names = False'
+    state: present
+
+- name: JoinOriDomain| Add ad_gpo_access_control line to SSSD config
+  become: true
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    regexp: '^ad_gpo_access_control'
+    line: 'ad_gpo_access_control = permissive'
+    state: present
+- name: JoinOriDomain| override space with -
+  become: true
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    insertafter: '^services = nss, pam'
+    regexp: '^override_space = -'
+    line: 'override_space = -'
+    state: present
+- name: JoinOriDomain| set debug level to 0
+  become: true
+  lineinfile:
+    path: /etc/sssd/sssd.conf
+    insertafter: '^override_space = -'
+    regexp: '^debug_level = 0'
+    line: 'debug_level = 0'
+    state: present
+- name: JoinOriDomain| add operations_servers_linux to sudo
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/orica
+    regexp: '^%Operations_Servers_Linux@ori.orica.net'
+    line:  '%Operations_Servers_Linux@ori.orica.net ALL = (ALL) NOPASSWD:ALL'
+    create: yes
+    validate: /usr/sbin/visudo -cf %s
+- name: JoinOriDomain| add support to sudo
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/orica
+    regexp: "^%{{ ansible_nodename | split('.') | first }}-Support"
+    line:  "%{{ ansible_nodename | split('.') | first }}-Support ALL = (ALL) NOPASSWD:ALL"
+    create: yes
+    validate: /usr/sbin/visudo -cf %s
+- name: JoinOriDomain| add  operations_servers_linux(no suffix) to sudo
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/orica
+    regexp: '^%Operations_Servers_Linux ALL = (ALL) NOPASSWD:ALL'
+    line:  '%Operations_Servers_Linux ALL = (ALL) NOPASSWD:ALL'
+    create: yes
+    validate: /usr/sbin/visudo -cf %s
+- name: JoinOriDomain| delete sssd cache and restart sssd
+  become: true
+  ansible.builtin.shell: systemctl stop sssd; rm -rf /var/lib/sss/db/*; systemctl start sssd;

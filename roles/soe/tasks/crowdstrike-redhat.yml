@@ -1,0 +1,32 @@
+---
+- name: Crowdstrike| gather secrets
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "oricacscid"
+  register: kvValue
+
+- name: Crowdstrike| declare falcon cid
+  ansible.builtin.set_fact:
+    oricacscid: "{{ kvValue }}"
+
+- name: Crowdstrike| install libnl package
+  become: true
+  ansible.builtin.dnf: 
+    name: "{{ linuxSoePath }}/soe/linux/rpm/libnl-1.1.4-3.el7.x86_64.rpm"
+    state: present
+- name: Crowdstrike| install rpm package
+  become: true
+  ansible.builtin.dnf: 
+    name: "{{ linuxSoePath }}/soe/linux/rpm/falcon-sensor-7.19.0-17219.el{{ ansible_distribution_major_version }}.x86_64.rpm"
+    state: present
+- name: Crowdstrike| configure CID
+  become: true
+  shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ oricacscid }}"
+  when: ansible_facts['services']['falcon-sensor.service']['state']| default('not-found') != 'running'
+- name: Crowdstrike| enable and start falcon-sensor
+  become: true
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: falcon-sensor
+  when: ansible_facts['services']['falcon-sensor.service']['state']| default('not-found') != 'running'

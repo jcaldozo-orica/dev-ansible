@@ -1,4 +1,10 @@
 ---
+- name: Certificate| Install a list of packages
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - ca-certificates
+    state: present
 - name: Certificate| Copy CA certs to target hosts
   become: true
   ansible.builtin.copy:

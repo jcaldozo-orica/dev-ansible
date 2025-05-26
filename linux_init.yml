@@ -1,25 +1,28 @@
 ---
 - hosts: dev
-  become: true
   tasks: 
 
   - name: Set authorized keys taken from url
+    become: true
     ansible.posix.authorized_key:
       user: admin3
       state: present
       key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/ansible.key
   - name: create systemadmin group
+    become: true
     ansible.builtin.group:
       name: systemadmin
       state: present
       gid: 650
   - name: add systemadmin to sudo
+    become: true
     ansible.builtin.lineinfile:
       path: /etc/sudoers.d/orica
       line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
       create: yes
       validate: /usr/sbin/visudo -cf %s
   - name: Add admin3 to systemadmin group
+    become: true
     ansible.builtin.user:
       name: admin3
       groups: systemadmin
