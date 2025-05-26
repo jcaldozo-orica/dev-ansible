@@ -1,7 +1,6 @@
 ---
 - name: TEST
   hosts: dev
-  become: true
   gather_facts: yes
   vars:
     install_crowdstrike: true

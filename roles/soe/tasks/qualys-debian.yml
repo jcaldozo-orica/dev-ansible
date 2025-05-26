@@ -36,6 +36,7 @@
   shell: "/usr/local/qualys/cloud-agent/bin/qualys-cloud-agent.sh CustomerId={{ qualysCid }} ActivationId={{ qualysActId }} ServerUri={{ qualysUri }}"
   when: ansible_facts['services']['qualys-cloud-agent.service']['state']| default('not-found')!='running'
 - name: Qualys| enable and start service
+  become: true
   ansible.builtin.systemd_service:
     state: started
     enabled: true
