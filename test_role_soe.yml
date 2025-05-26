@@ -3,13 +3,13 @@
   hosts: dev
   gather_facts: yes
   vars:
-    install_crowdstrike: true
-    install_qualys: true
-    install_servicenowacc: true
-    install_nxlog: true
-    install_illumio: true
-    install_icinga: false
-    joinOriDomain: false
+    install_crowdstrike: false
+    install_qualys: false
+    install_servicenowacc: false
+    install_nxlog: false
+    install_illumio: false
+    install_icinga: true
+    joinOriDomain: true
   tasks:
     - include_role: 
         name: soe
