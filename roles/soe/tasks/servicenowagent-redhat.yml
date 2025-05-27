@@ -1,10 +1,11 @@
 ---
 #install servicenow agent
-- name: ServiceNowAgent|install deb package
+- name: ServiceNowAgent|install package
   become: true
   ansible.builtin.dnf: 
     name: "{{ linuxSoePath }}/soe/linux/rpm/Orica-Linux-snowagent-7.0.0-x64.rpm"
     state: present
+    disable_gpg_check: true
 - name: ServiceNowAgent|update configuration
   shell: "/opt/snow/snowcron -f /opt/snow/snowcron.conf /opt/snow/snowagent"
   become: true
