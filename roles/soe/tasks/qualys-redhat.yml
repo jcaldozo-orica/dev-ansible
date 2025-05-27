@@ -26,7 +26,7 @@
   ansible.builtin.set_fact:
     qualysUri: "{{ kvValue }}"
 
-- name: Qualys| install deb package
+- name: Qualys| install package
   become: true
   ansible.builtin.dnf: 
     name: "{{ linuxSoePath }}/soe/linux/rpm/QualysCloudAgent.rpm"

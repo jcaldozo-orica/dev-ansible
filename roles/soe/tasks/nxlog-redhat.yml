@@ -7,8 +7,8 @@
     - apr
     - perl-libs
     state: present
-- name: Nxlog| install deb package
+- name: Nxlog| install package
   become: true
   ansible.builtin.dnf: 
-    deb: "{{ linuxSoePath }}/soe/linux/deb/nxlog-ce-3.2.2329_rhel{{ ansible_distribution_major_version }}.x86_64.rpm"
+    name: "{{ linuxSoePath }}/soe/linux/rpm/nxlog-ce-3.2.2329_rhel{{ ansible_distribution_major_version }}.x86_64.rpm"
 #config goes here
