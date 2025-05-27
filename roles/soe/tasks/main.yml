@@ -61,7 +61,7 @@
 
 - name: RHEL| subscription management
   include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml
-  when: ansible_facts['os_family']|lower == redhat
+  when: ansible_facts['os_family']|lower == "redhat"
   ignore_errors: True
 
 - name: Update | install updates
