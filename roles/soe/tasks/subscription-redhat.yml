@@ -24,4 +24,3 @@
     state: present
     activationkey: "{{ rhel_actid }}"
     org_id: "{{ rhel_orgid }}"
-    auto_attach: true
