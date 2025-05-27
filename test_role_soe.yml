@@ -7,7 +7,7 @@
     install_crowdstrike: false
     install_qualys: false
     install_servicenowacc: false
-    install_nxlog: true
+    install_nxlog: false
     install_illumio: true
     install_icinga: true
     joinOriDomain: true
