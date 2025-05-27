@@ -27,10 +27,11 @@
     user: nagios
     state: present
     key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/nagios.key
-- name: Enable a RHSM repository
+- name: Icinga| Enable EPEL/codeready repository
   become: true
   community.general.rhsm_repository:
     name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}-rpms
+    state: enabled
 - name: Icinga| Install a list of packages for Icinga/Nagios
   become: true
   ansible.builtin.dnf:
@@ -45,6 +46,11 @@
     - nagios-plugins-uptime
     - python3-pip
     state: present
+- name: Icinga| Purge EPEL/codeready repository
+  become: true
+  community.general.rhsm_repository:
+    name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}-rpms
+    state: purge
 - name: Icinga| symlink nagios lib
   become: true
   ansible.builtin.file:
