@@ -30,7 +30,7 @@
 - name: Enable a RHSM repository
   become: true
   community.general.rhsm_repository:
-    name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-$(arch)-rpms
+    name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}-rpms
 - name: Icinga| Install a list of packages for Icinga/Nagios
   become: true
   ansible.builtin.dnf:
