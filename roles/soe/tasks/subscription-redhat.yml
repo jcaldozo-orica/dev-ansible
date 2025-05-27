@@ -7,7 +7,7 @@
 
 - name:  Subscription|  declare rhel-actid
   ansible.builtin.set_fact:
-    rhel-actid: "{{ kvValue }}"
+    rhel_actid: "{{ kvValue }}"
 
 - name: Subscription| gather secrets rhel-orgid
   include_tasks: get_kv_secrets.yml
@@ -17,11 +17,11 @@
 
 - name:  Subscription|  declare rhel-actid
   ansible.builtin.set_fact:
-    rhel-orgid: "{{ kvValue }}"
+    rhel_orgid: "{{ kvValue }}"
 
 - name: Register and subscribe to multiple pools.
   community.general.redhat_subscription:
     state: present
-    activationkey: "{{ rhel-actid }}"
-    org_id: "{{ rhel-orgid }}"
+    activationkey: "{{ rhel_actid }}"
+    org_id: "{{ rhel_orgid }}"
     auto_attach: true
