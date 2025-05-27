@@ -5,7 +5,7 @@
   ansible.builtin.dnf:
     pkg:
     - apr
-    - libdbi1
+    - perl-libs
     state: present
 - name: Nxlog| install deb package
   become: true

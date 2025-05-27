@@ -5,8 +5,8 @@
   vars:
     install_servicenowagent: false
     install_crowdstrike: false
-    install_qualys: true
-    install_servicenowacc: true
+    install_qualys: false
+    install_servicenowacc: false
     install_nxlog: true
     install_illumio: true
     install_icinga: true
