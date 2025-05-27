@@ -75,7 +75,7 @@
 
 - name: Crowdstrike| install 
   include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_crowdstrike is undefined pr install_crowdstrike == true
+  when: install_crowdstrike is undefined or install_crowdstrike == true
   ignore_errors: True 
 
 - name: Qualys| install 
