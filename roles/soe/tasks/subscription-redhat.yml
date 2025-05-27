@@ -20,7 +20,7 @@
     rhel_orgid: "{{ kvValue }}"
 
 - name: Subscription| Register and subscribe
-  become: truea
+  become: true
   community.general.redhat_subscription:
     state: present
     activationkey: "{{ rhel_actid }}"
