@@ -5,7 +5,7 @@
     secretName: "rhel-actid"
   register: kvValue
 
-- name:  Subscription|  declare rhel-actid
+- name:  Subscription| declare rhel-actid
   ansible.builtin.set_fact:
     rhel_actid: "{{ kvValue }}"
 
@@ -15,11 +15,12 @@
     secretName: "rhel-orgid"
   register: kvValue
 
-- name:  Subscription|  declare rhel-actid
+- name:  Subscription| declare rhel-actid
   ansible.builtin.set_fact:
     rhel_orgid: "{{ kvValue }}"
 
-- name: Register and subscribe to multiple pools.
+- name: Subscription| Register and subscribe
+  become: truea
   community.general.redhat_subscription:
     state: present
     activationkey: "{{ rhel_actid }}"
