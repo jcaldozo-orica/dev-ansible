@@ -29,9 +29,10 @@
     key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/nagios.key
 - name: Icinga| Enable EPEL/codeready repository
   become: true
-  community.general.rhsm_repository:
-    name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}-rpms
-    state: enabled
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+    disable_gpg_check: false
+    state: present
 - name: Icinga| Install a list of packages for Icinga/Nagios
   become: true
   ansible.builtin.dnf:
@@ -48,9 +49,10 @@
     state: present
 - name: Icinga| Purge EPEL/codeready repository
   become: true
-  community.general.rhsm_repository:
-    name: codeready-builder-for-rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}-rpms
-    state: purge
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+    disable_gpg_check: false
+    state: removed
 - name: Icinga| symlink nagios lib
   become: true
   ansible.builtin.file:
