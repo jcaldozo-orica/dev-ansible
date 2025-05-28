@@ -59,6 +59,7 @@
     dest: /usr/lib/nagios
     state: link
 - name: Icinga| Install check_systemd via pip
+  become: true
   ansible.builtin.pip:
     name: check_systemd
     extra_args: --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org 
