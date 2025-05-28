@@ -4,18 +4,24 @@
   vars:
     secretName: "accApiKey"
   register: kvValue
+  ignore_errors: True
+
 - name: ServiceNowAcc| declare accApiKey 
   ansible.builtin.set_fact:
     accApiKey: "{{ kvValue }}"
+  ignore_errors: True
 
 - name: ServiceNowAcc| gather secrets (accMid)
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "accMid"
   register: kvValue
+  ignore_errors: True
+
 - name: ServiceNowAcc| declare accMid 
   ansible.builtin.set_fact:
     accMid: "{{ kvValue }}"
+  ignore_errors: True
 
 #install servicenow acc
 - name: ServiceNowAcc| download script
@@ -24,19 +30,26 @@
     url:  "https://orica2.service-now.com/api/sn_agent/agents/install_agent"
     dest: "{{ linuxSoePath }}/install_agent"
     mode: "0755"
+  ignore_errors: True
+
 - name: ServiceNowAcc| Install a list of packages
   become: true
   ansible.builtin.dnf:
     pkg:
     - unzip
     state: present
+  ignore_errors: True
+
 - name: ServiceNowAcc| Install via shell
   become: true
   shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '{{ linuxSoePath }}/install_agent'"
   when: ansible_facts['services']['acc.service']['state']| default('not-found') != 'running'
+  ignore_errors: True
+
 - name: ServiceNowAcc| download 01_servicenow sudoer file
   become: true
   ansible.builtin.get_url:
     url:  "{{ serviceNowSudoerUrl }}"
     dest: "/etc/sudoers.d/01_servicenow"
     mode: "0440"
+  ignore_errors: True

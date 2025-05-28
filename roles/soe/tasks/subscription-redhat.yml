@@ -4,20 +4,25 @@
   vars:
     secretName: "rhel-actid"
   register: kvValue
+  ignore_errors: True
+
 
 - name:  Subscription| declare rhel-actid
   ansible.builtin.set_fact:
     rhel_actid: "{{ kvValue }}"
+  ignore_errors: True
 
 - name: Subscription| gather secrets rhel-orgid
   include_tasks: get_kv_secrets.yml
   vars:
     secretName: "rhel-orgid"
   register: kvValue
+  ignore_errors: True
 
 - name:  Subscription| declare rhel-actid
   ansible.builtin.set_fact:
     rhel_orgid: "{{ kvValue }}"
+  ignore_errors: True
 
 - name: Subscription| Register and subscribe
   become: true
@@ -25,3 +30,4 @@
     state: present
     activationkey: "{{ rhel_actid }}"
     org_id: "{{ rhel_orgid }}"
+  ignore_errors: True

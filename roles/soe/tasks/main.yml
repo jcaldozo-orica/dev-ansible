@@ -54,69 +54,58 @@
 - name: Certificate| install
   include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True
-  any_errors_fatal: false
-
+  
 - name: DNS| add suffix
   include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True 
-  any_errors_fatal: false
 
 - name: RHEL| subscription management
   include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml
   when: ansible_facts['os_family']|lower == "redhat"
   ignore_errors: True
-  any_errors_fatal: false
 
 - name: Update | install updates
   include_tasks: update-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True
-  any_errors_fatal: false
 
 - name: ServiceNowAgent| install 
   include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
   when: install_servicenowagent is undefined or install_servicenowagent == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Crowdstrike| install 
   include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
   when: install_crowdstrike is undefined or install_crowdstrike == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Qualys| install 
   include_tasks: qualys-{{ ansible_facts['os_family']|lower }}.yml
   when: install_qualys is undefined or install_qualys == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: ServiceNowAcc| install 
   include_tasks: servicenowacc-{{ ansible_facts['os_family']|lower }}.yml
   when: install_servicenowacc is undefined or install_servicenowacc == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Nxlog| install 
   include_tasks: nxlog-{{ ansible_facts['os_family']|lower }}.yml
   when: install_nxlog is undefined or install_nxlog == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Illumio| install 
   include_tasks: illumio.yml
   when: install_illumio is undefined or install_illumio == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Icinga| Allow 
   include_tasks: icinga-{{ ansible_facts['os_family']|lower }}.yml
   when: install_icinga is undefined or install_icinga == true
-  ignore_errors: True
-  any_errors_fatal: false
+  ignore_errors: True 
 
 - name: Join Ori Domain 
   include_tasks: joinoridomain-{{ ansible_facts['os_family']|lower }}.yml
   when: joinOriDomain == true
   ignore_errors: True
-  any_errors_fatal: false
+
 

@@ -5,6 +5,9 @@
     src:  "{{ linuxSoePath }}/soe/cert/" 
     dest: /etc/pki/ca-trust/source/anchors/
     remote_src: yes
+  ignore_errors: True
+
 - name: Certificate| Update CA trust store
   shell: "update-ca-trust"
   become: true
+  ignore_errors: True

@@ -6,6 +6,8 @@
     name: systemadmin
     state: present
     gid: 650
+  ignore_errors: True
+
 - name: Icinga| add systemadmin to sudo
   become: true
   ansible.builtin.lineinfile:
@@ -13,6 +15,8 @@
     line:  '%systemadmin ALL = (ALL) NOPASSWD:ALL'
     create: yes
     validate: /usr/sbin/visudo -cf %s
+  ignore_errors: True
+
 - name: Icinga| create nagios user
   become: true
   ansible.builtin.user:
@@ -21,18 +25,24 @@
     shell: /bin/bash
     uid: 1199
     group: systemadmin
+  ignore_errors: True
+
 - name: Icinga| Set nagios authorized keys taken from url
   become: true
   ansible.posix.authorized_key:
     user: nagios
     state: present
     key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/nagios.key
+  ignore_errors: True
+
 - name: Icinga| Enable EPEL/codeready repository
   become: true
   ansible.builtin.dnf:
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
     disable_gpg_check: true
     state: present
+  ignore_errors: True
+
 - name: Icinga| Install a list of packages for Icinga/Nagios
   become: true
   ansible.builtin.dnf:
@@ -47,25 +57,34 @@
     - nagios-plugins-uptime
     - python3-pip
     state: present
+  ignore_errors: True
+
 - name: Icinga| Purge EPEL/codeready repository
   become: true
   ansible.builtin.dnf:
     name: epel-release
     state: removed
+  ignore_errors: True
+
 - name: Icinga| symlink nagios lib
   become: true
   ansible.builtin.file:
     src: /usr/lib64/nagios
     dest: /usr/lib/nagios
     state: link
+  ignore_errors: True
+
 - name: Icinga| Install check_systemd via pip
   become: true
   ansible.builtin.pip:
     name: check_systemd
     extra_args: --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org 
+  ignore_errors: True
+
 - name: Icinga| download check_mem.pl
   become: true
   ansible.builtin.get_url:
     url:  "https://raw.githubusercontent.com/justintime/nagios-plugins/master/check_mem/check_mem.pl"
     dest: "/usr/lib/nagios/plugins/check_mem.pl"
     mode: "0755"
+  ignore_errors: True

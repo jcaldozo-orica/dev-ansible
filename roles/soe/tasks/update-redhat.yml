@@ -5,3 +5,5 @@
     name: "*"
     state: latest
     security: true
+  ignore_errors: True
+  

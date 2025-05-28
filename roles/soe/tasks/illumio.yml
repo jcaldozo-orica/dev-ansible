@@ -4,9 +4,13 @@
   vars:
     secretName: "illumioAcode"
   register: kvValue
+  ignore_errors: True
+
 - name: Illumio| declare illumioAcode 
   ansible.builtin.set_fact:
     illumioAcode: "{{ kvValue }}"
+  ignore_errors: True
+
 #install illumio
 - name: Illumio| Install Illumio via shell
   become: true
@@ -22,3 +26,4 @@
     enabled: true
     name: illumio-ven
   when: ansible_facts['services']['illumio-ven.service']['state']| default('not-found') != 'not-found'
+  ignore_errors: True
