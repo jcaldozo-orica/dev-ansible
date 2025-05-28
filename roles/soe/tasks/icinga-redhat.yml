@@ -55,8 +55,8 @@
 - name: Icinga| symlink nagios lib
   become: true
   ansible.builtin.file:
-    src: /usr/lib/nagios
-    dest: /usr/lib64/nagios
+    src: /usr/lib64/nagios
+    dest: /usr/lib/nagios
     state: link
 - name: Icinga| Install check_systemd via pip
   ansible.builtin.pip:
