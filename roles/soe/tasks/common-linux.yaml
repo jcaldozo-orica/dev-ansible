@@ -1,0 +1,52 @@
+---
+- name: download azcopy
+  become: true
+  ansible.builtin.get_url:
+    url:  "{{ azcopyUrl }}" 
+    dest: "/usr/bin/azcopy"
+    mode: "0755"
+- name: linuxSoeUri| gather secrets
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "linuxSoeUri"
+  register: kvValue
+- name: linuxSoeUri| declare
+  ansible.builtin.set_fact:
+    linuxSoeUri: "{{ kvValue }}" 
+- name: SOEfiles| download soe files via azcopy
+  become: true
+  ansible.builtin.shell: /usr/bin/azcopy copy --recursive --overwrite false "{{ linuxSoeUri }}" "{{ linuxSoePath }}"
+
+- name: SSH| Copy banner from soe directory
+  become: true
+  ansible.builtin.copy:
+    src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
+    dest: /etc/ssh/banner.txt
+    remote_src: yes
+- name: SSH| Configure sshd_config with banner and PermitRootLogin
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#Banner none'
+    line: 'Banner /etc/ssh/banner.txt'
+- name: SSH| Configure sshd_config with banner and PermitRootLogin
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#PermitRootLogin prohibit-password'
+    line: 'PermitRootLogin no'
+- name: SSH| enable and start sshd
+  become: true
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: sshd
+
+- name: Certificate| install
+  include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
+  ignore_errors: True
+  
+- name: DNS| add suffix
+  include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
+  ignore_errors: True 
