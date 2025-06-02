@@ -8,7 +8,7 @@
   group_by:
     key: os_{{ ansible_facts['distribution'] }}
 
-- name: Linux| common SOE
+- name: common SOE
   include_tasks: common-{{ ansible_facts['ansible_system']lower }}.yml
   ignore_errors: True
 
@@ -47,7 +47,7 @@
   ignore_errors: True 
 
 - name: Illumio| install 
-  include_tasks: illumio.yml
+  include_tasks: illumio-{{ ansible_facts['ansible_system']lower }}.yml
   when: install_illumio is undefined or install_illumio == true
   ignore_errors: True 
 

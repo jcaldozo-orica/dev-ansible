@@ -1,7 +1,7 @@
 ---
 - hosts: dev
   tasks: 
-
+  
   - name: Set authorized keys taken from url
     become: true
     ansible.posix.authorized_key:
