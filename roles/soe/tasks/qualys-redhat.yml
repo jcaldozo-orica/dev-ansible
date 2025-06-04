@@ -38,7 +38,7 @@
 - name: Qualys| install package
   become: true
   ansible.builtin.dnf: 
-    name: "{{ linuxSoePath }}/soe/linux/rpm/QualysCloudAgent.rpm"
+    name: "{{ linuxSoePath }}/linuxsoe/rpm/QualysCloudAgent.rpm"
     disable_gpg_check: true
   when: "'qualys-cloud-agent' not in ansible_facts.packages"
   ignore_errors: True

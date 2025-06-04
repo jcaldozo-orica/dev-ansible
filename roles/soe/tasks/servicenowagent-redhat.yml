@@ -3,7 +3,7 @@
 - name: ServiceNowAgent|install package
   become: true
   ansible.builtin.dnf: 
-    name: "{{ linuxSoePath }}/soe/linux/rpm/Orica-Linux-snowagent-7.0.0-x64.rpm"
+    name: "{{ linuxSoePath }}/linuxsoe/rpm/Orica-Linux-snowagent-7.0.0-x64.rpm"
     state: present
     disable_gpg_check: true
   ignore_errors: True

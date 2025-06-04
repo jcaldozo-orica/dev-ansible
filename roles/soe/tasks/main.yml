@@ -1,16 +1,13 @@
 ---
-- name: Populate service facts
-  ansible.builtin.service_facts:
-- name: Gather the package facts
-  ansible.builtin.package_facts:
-    manager: auto
-- name: Classify hosts depending on their OS distribution
-  group_by:
-    key: os_{{ ansible_facts['distribution'] }}
+- name: common SOE
+  include_tasks: common-linux.yml
+  ignore_errors: True
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"]
 
 - name: common SOE
-  include_tasks: common-{{ ansible_facts['ansible_system']lower }}.yml
+  include_tasks: common-windows.yml
   ignore_errors: True
+  when: ansible_facts['os_family']|lower == "windows"
 
 - name: RHEL| subscription management
   include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml

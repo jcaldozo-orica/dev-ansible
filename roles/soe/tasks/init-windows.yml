@@ -1,0 +1,12 @@
+---
+- name: Create directory structure
+  ansible.windows.win_file:
+    path: C:\oricatools
+    state: directory
+- name: Download ConfigureRemotingForAnsible.ps1
+  ansible.windows.win_get_url:
+    url: https://raw.githubusercontent.com/ansible/ansible-documentation/refs/heads/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
+    dest: c:\oricatools\ConfigureRemotingForAnsible.ps1
+    validate_certs: no
+- name: Run a command under PowerShell
+  win_shell: c:\oricatools\ConfigureRemotingForAnsible.ps1

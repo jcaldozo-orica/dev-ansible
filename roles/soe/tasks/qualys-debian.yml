@@ -29,7 +29,7 @@
 - name: Qualys| install deb package
   become: true
   ansible.builtin.apt: 
-    deb: "{{ linuxSoePath }}/soe/linux/deb/QualysCloudAgent.deb"
+    deb: "{{ linuxSoePath }}/linuxsoe/deb/QualysCloudAgent.deb"
   when: "'qualys-cloud-agent' not in ansible_facts.packages"
 - name: Qualys| configure CID
   become: true

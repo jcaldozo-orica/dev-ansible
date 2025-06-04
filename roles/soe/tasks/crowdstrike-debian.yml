@@ -4,7 +4,7 @@
   vars:
     secretName: "oricacscid"
   register: kvValue
-  
+
 
 - name: Crowdstrike| declare falcon cid
   ansible.builtin.set_fact:
@@ -13,7 +13,7 @@
 - name: Crowdstrike| install deb package
   become: true
   ansible.builtin.apt: 
-    deb: "{{ linuxSoePath }}/soe/linux/deb/falcon-sensor_7.06.0-16108_amd64.deb"
+    deb: "{{ linuxSoePath }}/linuxsoe/deb/falcon-sensor_7.06.0-16108_amd64.deb"
 - name: Crowdstrike| configure CID
   become: true
   shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ oricacscid }}"

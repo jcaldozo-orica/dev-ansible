@@ -1,4 +1,9 @@
 ---
+- name: Populate service facts
+  ansible.builtin.service_facts:
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
 - name: download azcopy
   become: true
   ansible.builtin.get_url:
@@ -20,7 +25,7 @@
 - name: SSH| Copy banner from soe directory
   become: true
   ansible.builtin.copy:
-    src:  "{{ linuxSoePath }}/soe/linux/banner.txt" 
+    src:  "{{ linuxSoePath }}/linuxsoe/banner.txt" 
     dest: /etc/ssh/banner.txt
     remote_src: yes
 - name: SSH| Configure sshd_config with banner and PermitRootLogin
