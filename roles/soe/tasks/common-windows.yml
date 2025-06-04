@@ -15,7 +15,7 @@
   register: kvValue
 - name: windowsSoeUri| declare
   ansible.builtin.set_fact:
-    windows: "{{ kvValue }}" 
+    windowsSoeUri: "{{ kvValue }}" 
 - name: SOEfiles| download soe files via azcopy
   win_shell: c:\oricatools\azcopy.exe copy --recursive --overwrite false "{{ windowsSoeUri }}" "{{ windowsSoePath }}"
 
