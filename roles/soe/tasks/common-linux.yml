@@ -47,11 +47,3 @@
   ansible.builtin.systemd_service:
     state: restarted
     name: sshd
-
-- name: Certificate| install
-  include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
-  ignore_errors: True
-  
-- name: DNS| add suffix
-  include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
-  ignore_errors: True 
