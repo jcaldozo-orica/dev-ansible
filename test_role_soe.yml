@@ -11,6 +11,7 @@
     install_illumio: true
     install_icinga: true
     joinOriDomain: true
+    server_region: "apac" #apac/nala/emea
   tasks:
     - include_role: 
         name: soe

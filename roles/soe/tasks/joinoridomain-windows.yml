@@ -1,0 +1,34 @@
+---
+- name: JoinOriDomain| gather secrets (joindomain-pw)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "joindomain-pw"
+  register: kvValue
+  ignore_errors: True
+
+- name: declare joindomainpw 
+  ansible.builtin.set_fact:
+    joindomainpw: "{{ kvValue }}"
+  ignore_errors: True
+
+
+- name: JoinOriDomain| gather secrets (joindomain-user)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "joindomain-user"
+  register: kvValue
+  ignore_errors: True
+
+- name: JoinOriDomain| declare joindomainuser 
+  ansible.builtin.set_fact:
+    joindomainuser: "{{ kvValue }}"
+  ignore_errors: True
+
+- name: JoinOriDomain| join
+  ansible.windows.win_domain_membership:
+    dns_domain_name: ori.orica.net
+    domain_admin_user: "{{ joindomainuser }}@ori.orica.net"
+    domain_admin_password: "{{ joindomainpw }}"
+    domain_ou_path: "OU=Member Servers,DC=ori,DC=orica,DC=net"
+    state: domain
+  register: domain_state

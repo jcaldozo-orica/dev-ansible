@@ -32,3 +32,13 @@
     name: LegalNoticeText
     data: "Attempting To Log On Orica owns this computer system. Only authorised users may use Orica systems and all related equipment\",\" data\",\" resources and networks ('Orica IT Systems'). Orica conducts ongoing monitoring (both continuous monitoring and targeted checks) of Orica IT Systems to ensure that they are only used by authorised persons in accordance with law and Orica policies. All information\",\" including personal information placed on or sent over Orica IT systems may be monitored\",\" subject to local laws. Unauthorised or unlawful users and conduct may be the subject of disciplinary and legal action. Evidence collected during monitoring may be used in disciplinary proceedings\",\" or in civil or criminal actions\",\" and may be provided to local or foreign law enforcement and regulatory agencies. Monitoring data may also be provided or made available to relevant IT\",\" legal\",\" HR personnel and external legal advisers. By using this system\",\" you agree you are an authorised user and consent to the terms of use contained in Orica's Code of Business Conduct located on the Globe (Orica Intranet). You also consent to the monitoring of Orica IT Systems by Orica or its agents. Please contact your Orica Line Manager if you have any queries or concerns about this statement.\",\" Effective date: 8th September 2022."
     type: string
+
+- name: BGinfo| install  package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\bginfo\bginfo64.exe
+    arguments:
+      - C:\oricatools\windowssoe\bginfo\Default.bgi
+      - /timer:0
+      - /silent
+      - /nolicprompt
+    state: present

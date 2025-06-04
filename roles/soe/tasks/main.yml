@@ -17,14 +17,10 @@
 - name: DNS| add suffix
   include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True 
-  
+
 - name: RHEL| subscription management
   include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml
   when: ansible_facts['os_family']|lower == "redhat"
-  ignore_errors: True
-
-- name: Update | install updates
-  include_tasks: update-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True
 
 - name: ServiceNowAgent| install 
@@ -67,4 +63,11 @@
   when: joinOriDomain == true
   ignore_errors: True
 
-
+- name: SCCM install
+  include_tasks: sccm.yml
+  when: install_sccm == true && ansible_facts['os_family']|lower == "windows"
+  ignore_errors: True
+  
+- name: Update | install updates
+  include_tasks: update-{{ ansible_facts['os_family']|lower }}.yml
+  ignore_errors: True

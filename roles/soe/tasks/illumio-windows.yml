@@ -1,0 +1,32 @@
+---
+#install illumio
+- name: Illumio| install  package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\illumio\Deploy-Application.EXE
+    product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
+    state: present
+  ignore_errors: True
+- name: Illumio| enable and start service
+  ansible.windows.win_service:
+    name: venAgentMgrSvc
+    start_mode: auto
+    state: started
+  ignore_errors: True
+- name: Illumio| enable and start service
+  ansible.windows.win_service:
+    name: venAgentMonitorSvc
+    start_mode: auto
+    state: started
+  ignore_errors: True
+- name: Illumio| enable and start service
+  ansible.windows.win_service:
+    name: venPlatformHandlerSvc
+    start_mode: auto
+    state: started
+  ignore_errors: True
+- name: Illumio| enable and start service
+  ansible.windows.win_service:
+    name: venVtapServerSvc
+    start_mode: auto
+    state: started
+  ignore_errors: True

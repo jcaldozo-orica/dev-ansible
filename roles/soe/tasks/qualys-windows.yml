@@ -1,0 +1,54 @@
+---
+- name: Qualys| gather secrets (qualysCid)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "qualysCid"
+  register: kvValue
+  ignore_errors: True
+
+- name: Qualys| declare qualysCid 
+  ansible.builtin.set_fact:
+    qualysCid: "{{ kvValue }}"
+  ignore_errors: True
+
+- name: Qualys| gather secrets (qualysWinActId)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "qualysWinActId"
+  register: kvValue
+  ignore_errors: True
+
+- name: Qualys| declare qualysWinActId 
+  ansible.builtin.set_fact:
+    qualysWinActId: "{{ kvValue }}"
+  ignore_errors: True
+
+- name: Qualys| gather secrets (qualysUri)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "qualysUri"
+  register: kvValue
+  ignore_errors: True
+
+- name: Qualys| declare qualysUri 
+  ansible.builtin.set_fact:
+    qualysUri: "{{ kvValue }}"
+  ignore_errors: True
+
+- name: Qualys| install package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\qualys\QualysCloudAgent.exe
+    product_id: '{872AD668-585A-4642-8ED2-1C0695CAE776}'
+    arguments:
+      - CustomerId='{'{{ qualysCid }}'}'
+      - ActivationId='{'{{ qualysWinActId }}'}'
+      - WebServiceUri={{ qualysUri }}
+    state: present
+  ignore_errors: True
+
+- name: Qualys| enable and start service
+  ansible.windows.win_service:
+    name: QualysAgent
+    start_mode: auto
+    state: started
+  ignore_errors: True

@@ -1,0 +1,25 @@
+---
+#install and configure nxlog / point to 10.172.32.101
+- name: Nxlog| install package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\nxlog\nxlog-ce-3.2.2329.msi
+    product_id: '{BE5E656D-853E-4570-AE57-A45967208689}'
+    arguments:
+      - /install
+      - /qn
+    state: present
+  ignore_errors: True
+
+#config goes here C:\Program Files\nxlog\conf\nxlog.conf
+- name: Nxlog| copy conf file
+  ansible.windows.win_copy:
+    src: C:\oricatools\windowssoe\nxlog\{{ server_region }}\nxlog.conf
+    dest: C:\Program Files\nxlog\conf\nxlog.conf
+    remote_src: true
+
+- name: Nxlog| enable and restart service
+  ansible.windows.win_service:
+    name: Nxlog
+    start_mode: auto
+    state: restarted
+  ignore_errors: True

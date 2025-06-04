@@ -1,0 +1,9 @@
+---
+#install servicenow agent
+- name: ServiceNowAgent|install package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\snowagent\Orica-SVR-snowagent-7.0.0-x64.msi
+    product_id: '{38F0033C-878C-4203-A79C-2DFCE5A36F9C}'
+    arguments:
+      - /q
+    state: present

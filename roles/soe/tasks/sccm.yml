@@ -1,0 +1,11 @@
+---
+- name: SCCM| install  package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\sccm\ccmsetup.exe
+    arguments:
+      - SMSSITECODE=OR1
+      - SMSCACHESIZE=20
+      - SMSCACHEFLAGS=PERCENTDISKSPACE
+      - SMSMP=auynpc01.ori.orica.net
+      - FSP=auynpc01.ori.orica.net 
+  ignore_errors: True

@@ -1,0 +1,9 @@
+---
+#install servicenow acc
+- name: ServiceNowAcc| Install ServiceNowAcc
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\acc\Install_Production_ServiceNow_ClientCollector_4.1.1_x64.cmd
+    product_id: '{35BEA600-CBB5-4F95-8049-9011FBFDA9F5}'
+    state: present
+  ignore_errors: True
+

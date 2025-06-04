@@ -1,0 +1,8 @@
+---
+- name: Update| all packages to their latest version
+  ansible.windows.win_updates:
+    category_names:
+      - SecurityUpdates
+      - CriticalUpdates
+      - UpdateRollups
+    reboot: true

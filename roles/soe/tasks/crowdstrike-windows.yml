@@ -1,0 +1,30 @@
+---
+- name: Crowdstrike| gather secrets
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "oricacscid"
+  register: kvValue
+
+
+- name: Crowdstrike| declare falcon cid
+  ansible.builtin.set_fact:
+    oricacscid: "{{ kvValue }}"
+
+- name: Crowdstrike| install  package
+  ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\crowdstrike\WindowsSensor7-15-18514.exe
+    product_id: '{5B31CA01-26EE-4835-8D78-4DD24C4EF7A8}'
+    arguments:
+      - /install
+      - /quiet
+      - /norestart
+      - CID="{{ oricacscid }}"
+    state: present
+  ignore_errors: True
+
+- name: Crowdstrike| enable and start falcon-sensor
+  ansible.windows.win_service:
+    name: CSFalconService
+    start_mode: auto
+    state: started
+  ignore_errors: True
