@@ -1,0 +1,21 @@
+---
+- name: Certificate| Install Orica root CA
+  ansible.windows.win_certificate_store:
+    path: C:\oricatools\windowssoe\cert\orica_root.crt
+    state: present
+    store_name: Root
+- name: Certificate| Install Orica sub CA 2
+  ansible.windows.win_certificate_store:
+    path: C:\oricatools\windowssoe\cert\orica_sub_ca2.crt
+    state: present
+    store_name: Root
+- name: Certificate| Install Zscaler Root CA
+  ansible.windows.win_certificate_store:
+    path: C:\oricatools\windowssoe\cert\zscalerRootCA.crt
+    state: present
+    store_name: Root
+- name: Certificate| Install Zscaler Sub CA
+  ansible.windows.win_certificate_store:
+    path: C:\oricatools\windowssoe\cert\zscalerSubCA.crt
+    state: present
+    store_name: Root

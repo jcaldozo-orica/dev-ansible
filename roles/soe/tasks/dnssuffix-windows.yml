@@ -1,0 +1,6 @@
+---
+- name: DNS| add ori.orica.net es.orica.net orica.net suffix to all adapters
+  ansible.windows.win_dns_client:
+    adapter_names: "*"  # Apply to all adapters
+    dns_suffix: ori.orica.net, es.orica.net, orica.net
+    state: present

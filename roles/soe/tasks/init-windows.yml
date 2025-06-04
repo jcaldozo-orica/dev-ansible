@@ -5,7 +5,7 @@
     state: directory
 - name: Download ConfigureRemotingForAnsible.ps1
   ansible.windows.win_get_url:
-    url: https://raw.githubusercontent.com/ansible/ansible-documentation/refs/heads/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
+    url: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/ConfigureRemotingForAnsible.ps1
     dest: c:\oricatools\ConfigureRemotingForAnsible.ps1
     validate_certs: no
 - name: Run a command under PowerShell
