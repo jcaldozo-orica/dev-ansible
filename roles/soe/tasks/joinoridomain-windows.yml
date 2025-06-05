@@ -25,7 +25,7 @@
   ignore_errors: True
 
 - name: JoinOriDomain| join
-  ansible.ad.win_domain_membership:
+  microsoft.ad.membership:
     dns_domain_name: ori.orica.net
     domain_admin_user: "{{ joindomainuser }}@ori.orica.net"
     domain_admin_password: "{{ joindomainpw }}"
