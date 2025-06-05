@@ -21,7 +21,6 @@
 
 - name: Illumio| install  package
   ansible.windows.win_package:
-    name: Illumio
     product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
     state: present
   ignore_errors: true
