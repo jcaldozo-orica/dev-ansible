@@ -49,7 +49,7 @@
   ignore_errors: True 
 
 - name: Illumio| install 
-  include_tasks: illumio-{{ ansible_facts['ansible_system']|lower }}.yml
+  include_tasks: illumio-{{ ansible_facts['os_family']|lower }}.yml
   when: install_illumio is undefined or install_illumio == true
   ignore_errors: True 
 
