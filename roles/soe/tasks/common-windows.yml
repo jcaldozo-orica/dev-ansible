@@ -34,11 +34,4 @@
     type: string
 
 - name: BGinfo| install  package
-  ansible.windows.win_package:
-    path: c:\oricatools\windowssoe\bginfo\bginfo64.exe
-    arguments:
-      - C:\oricatools\windowssoe\bginfo\Default.bgi
-      - /timer:0
-      - /silent
-      - /nolicprompt
-    state: present
+  ansible.windows.win_shell: c:\oricatools\windowssoe\bginfo\bginfo64.exe C:\oricatools\windowssoe\bginfo\Default.bgi /timer:0 /silent /nolicprompt

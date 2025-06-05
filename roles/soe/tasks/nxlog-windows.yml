@@ -5,7 +5,6 @@
     path: c:\oricatools\windowssoe\nxlog\nxlog-ce-3.2.2329.msi
     product_id: '{BE5E656D-853E-4570-AE57-A45967208689}'
     arguments:
-      - /install
       - /q
     state: present
   ignore_errors: True
