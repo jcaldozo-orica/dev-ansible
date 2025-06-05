@@ -40,8 +40,8 @@
     path: c:\oricatools\windowssoe\qualys\QualysCloudAgent.exe
     product_id: '{872AD668-585A-4642-8ED2-1C0695CAE776}'
     arguments:
-      - CustomerId={{{ qualysCid }}}
-      - ActivationId={{{ qualysWinActId }}}
+      - CustomerId=\{{{ qualysCid }}\}
+      - ActivationId=\{{{ qualysWinActId }}\}
       - WebServiceUri={{ qualysUri }}
     state: present
   ignore_errors: True
