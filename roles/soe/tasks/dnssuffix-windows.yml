@@ -1,3 +1,4 @@
 ---
 - name: DNS| add ori.orica.net es.orica.net orica.net suffix to all adapters
   win_shell: Set-DnsClientGlobalSetting -SuffixSearchList @("ori.orica.net", "es.orica.net", "orica.net")
+  ignore_errors: true
