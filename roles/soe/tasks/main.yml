@@ -2,25 +2,27 @@
 - name: common SOE
   include_tasks: common-linux.yml
   ignore_errors: True
-  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"]
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"] and (install_common is undefined or install_common == true)
 
 - name: common SOE
   include_tasks: common-windows.yml
   ignore_errors: True
-  when: ansible_facts['os_family']|lower == "windows"
+  when: ansible_facts['os_family']|lower == "windows" and (install_common is undefined or install_common == true) 
 
 
 - name: Certificate| install
   include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True
+  when: install_common is undefined or install_common == true
   
 - name: DNS| add suffix
   include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}.yml
-  ignore_errors: True 
+  ignore_errors: True
+  when: install_common is undefined or install_common == true
 
 - name: RHEL| subscription management
   include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml
-  when: ansible_facts['os_family']|lower == "redhat"
+  when: ansible_facts['os_family']|lower == "redhat" and (install_common is undefined or install_common == true)
   ignore_errors: True
 
 - name: ServiceNowAgent| install 
@@ -71,3 +73,4 @@
 - name: Update | install updates
   include_tasks: update-{{ ansible_facts['os_family']|lower }}.yml
   ignore_errors: True
+  when: install_common is undefined or install_common == true
