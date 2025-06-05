@@ -5,12 +5,16 @@
     url: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/IcingaPowershellFramework.ps1
     dest: c:\oricatools\IcingaPowershellFramework.ps1
     validate_certs: no
+  ignore_errors: true
 - name: Icinga|Run framework
   win_shell: c:\oricatools\IcingaPowershellFramework.ps1
+  ignore_errors: true
 - name: Icinga|Download firewall/cert config PS
   ansible.windows.win_get_url:
     url: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/ConfigureForIcinga.ps1
     dest: c:\oricatools\ConfigureForIcinga.ps1
     validate_certs: no
+  ignore_errors: true    
 - name: Icinga|Run firewall/cert shell
   win_shell: c:\oricatools\ConfigureForIcinga.ps1
+  ignore_errors: true  
