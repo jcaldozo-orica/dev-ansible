@@ -19,21 +19,23 @@
     validate_certs: no
   ignore_errors: true
 
-- name: Illumio| install  package
-  ansible.windows.win_package:
-    path: c:\oricatools\windowssoe\illumio\pair.ps1
-    arguments:
-      - management-server scp1.illum.io:443 
-      - activation-code {{ winIllumioAcode }}
-    product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
-    state: present
-  ignore_errors: true
-  register: illumio_installed
-
-# - name: Illumio|Run script
-#   win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
+# - name: Illumio| install  package
+#   ansible.windows.win_package:
+#     product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
+#     state: present
 #   ignore_errors: true
-  # when: illumio_installed == true
+#   register: illumio_installed
+
+- name: Illumio|Check service exist
+  ansible.windows.win_service_info:
+    name: venAgentMgrSvc
+  register: illumio_installed
+  ignore_errors: true
+
+- name: Illumio|Run script
+  win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
+  ignore_errors: true
+  when: illumio_installed.exists == false
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
@@ -41,7 +43,7 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed == true
+  when: illumio_installed.exists == true
 
 
 - name: Illumio| enable and start service
@@ -50,7 +52,7 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed == true
+  when: illumio_installed.exists == true
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
@@ -58,7 +60,7 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed == true
+  when: illumio_installed.exists == true
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
@@ -66,5 +68,5 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed == true
+  when: illumio_installed.exists == true
 
