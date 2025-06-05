@@ -10,7 +10,7 @@
     install_nxlog: false
     install_illumio: true
     install_icinga: false
-    install_sccm: true
+    install_sccm: false
     joinOriDomain: false
     server_region: "apac" #apac/nala/emea
   tasks:

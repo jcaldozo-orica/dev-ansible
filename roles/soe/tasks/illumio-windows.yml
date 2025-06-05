@@ -21,15 +21,19 @@
 
 - name: Illumio| install  package
   ansible.windows.win_package:
+    path: c:\oricatools\windowssoe\illumio\pair.ps1
+    arguments:
+      - management-server scp1.illum.io:443 
+      - activation-code {{ winIllumioAcode }}
     product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
     state: present
   ignore_errors: true
   register: illumio_installed
 
-- name: Illumio|Run script
-  win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
-  ignore_errors: true
-  when: illumio_installed == false
+# - name: Illumio|Run script
+#   win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
+#   ignore_errors: true
+  # when: illumio_installed == true
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
