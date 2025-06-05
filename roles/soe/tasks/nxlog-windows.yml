@@ -6,7 +6,7 @@
     product_id: '{BE5E656D-853E-4570-AE57-A45967208689}'
     arguments:
       - /install
-      - /qn
+      - /q
     state: present
   ignore_errors: True
 
