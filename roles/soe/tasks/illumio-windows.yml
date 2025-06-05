@@ -1,32 +1,67 @@
 ---
 #install illumio
+- name: Illumio| gather secrets (winIllumioAcode)
+  include_tasks: get_kv_secrets.yml
+  vars:
+    secretName: "winIllumioAcode"
+  register: kvValue
+  ignore_errors: True
+
+- name: Illumio| declare winIllumioAcode 
+  ansible.builtin.set_fact:
+    winIllumioAcode: "{{ kvValue }}"
+  ignore_errors: True
+
+- name: Illumio| install  package
+  ansible.windows.win_get_url:
+    url: https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.ps1&profile_id=1734
+    dest: c:\oricatools\illumio\pair.ps1
+    validate_certs: no
+  ignore_errors: true
+
 - name: Illumio| install  package
   ansible.windows.win_package:
-    path: c:\oricatools\windowssoe\illumio\Deploy-Application.EXE
+    name: Illumio
     product_id: '{EE071725-F7CE-427C-9764-AC560AD85F70}'
     state: present
-  ignore_errors: True
+  ignore_errors: true
+  register: illumio_installed
+
+- name: Illumio|Run script
+  win_shell: c:\oricatools\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
+  ignore_errors: true
+  when: illumio_installed == true
+
 - name: Illumio| enable and start service
   ansible.windows.win_service:
     name: venAgentMgrSvc
     start_mode: auto
     state: started
   ignore_errors: True
+  when: illumio_installed == true
+
+
 - name: Illumio| enable and start service
   ansible.windows.win_service:
     name: venAgentMonitorSvc
     start_mode: auto
     state: started
   ignore_errors: True
+  when: illumio_installed == true
+
 - name: Illumio| enable and start service
   ansible.windows.win_service:
     name: venPlatformHandlerSvc
     start_mode: auto
     state: started
   ignore_errors: True
+  when: illumio_installed == true
+
 - name: Illumio| enable and start service
   ansible.windows.win_service:
     name: venVtapServerSvc
     start_mode: auto
     state: started
   ignore_errors: True
+  when: illumio_installed == true
+

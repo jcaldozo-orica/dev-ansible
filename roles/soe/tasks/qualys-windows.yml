@@ -45,6 +45,12 @@
       - WebServiceUri={{ qualysUri }}
     state: present
   ignore_errors: True
+  register: qualys_output
+
+- name: Qualys| Display debug message
+  debug:
+    msg: qualys_output
+  ignore_errors: True
 
 - name: Qualys| enable and start service
   ansible.windows.win_service:
@@ -52,3 +58,4 @@
     start_mode: auto
     state: started
   ignore_errors: True
+  
