@@ -12,10 +12,10 @@
     winIllumioAcode: "{{ kvValue }}"
   ignore_errors: True
 
-- name: Illumio| install  package
+- name: Illumio| download  package
   ansible.windows.win_get_url:
     url: https://scp1.illum.io:443/api/v21/software/ven/image?pair_script=pair.ps1&profile_id=1734
-    dest: c:\oricatools\illumio\pair.ps1
+    dest: c:\oricatools\windowssoe\illumio\pair.ps1
     validate_certs: no
   ignore_errors: true
 
@@ -28,7 +28,7 @@
   register: illumio_installed
 
 - name: Illumio|Run script
-  win_shell: c:\oricatools\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
+  win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
   ignore_errors: true
   when: illumio_installed == true
 

@@ -49,7 +49,7 @@
 
 - name: Qualys| Display debug message
   debug:
-    msg: qualys_output
+    msg: "{{ qualys_output }}"
   ignore_errors: True
 
 - name: Qualys| enable and start service
