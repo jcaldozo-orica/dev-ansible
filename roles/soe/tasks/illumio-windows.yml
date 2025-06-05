@@ -43,7 +43,6 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed.exists == true
 
 
 - name: Illumio| enable and start service
@@ -52,7 +51,7 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed.exists == true
+
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
@@ -60,7 +59,7 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed.exists == true
+
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
@@ -68,5 +67,5 @@
     start_mode: auto
     state: started
   ignore_errors: True
-  when: illumio_installed.exists == true
+
 

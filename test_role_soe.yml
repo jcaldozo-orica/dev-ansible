@@ -5,10 +5,10 @@
   vars:
     install_servicenowagent: false
     install_crowdstrike: false
-    install_qualys: false
+    install_qualys: true
     install_servicenowacc: false
     install_nxlog: false
-    install_illumio: true
+    install_illumio: false
     install_icinga: false
     install_sccm: false
     joinOriDomain: false
