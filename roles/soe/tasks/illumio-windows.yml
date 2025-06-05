@@ -29,7 +29,7 @@
 - name: Illumio|Run script
   win_shell: c:\oricatools\windowssoe\illumio\pair.ps1 -management-server scp1.illum.io:443 -activation-code {{ winIllumioAcode }}
   ignore_errors: true
-  when: illumio_installed == true
+  when: illumio_installed == false
 
 - name: Illumio| enable and start service
   ansible.windows.win_service:
