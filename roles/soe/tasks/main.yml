@@ -2,7 +2,7 @@
 - name: initial setting
   include_tasks: init-linux.yml
   ignore_errors: True
-  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"]
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu","debian"]
 
 - name: initial setting
   include_tasks: init-windows.yml
@@ -12,7 +12,7 @@
 - name: common SOE
   include_tasks: common-linux.yml
   ignore_errors: True
-  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"] and (install_common is undefined or install_common == true)
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu","debian"] and (install_common is undefined or install_common == true)
 
 - name: common SOE
   include_tasks: common-windows.yml
