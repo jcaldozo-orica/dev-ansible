@@ -1,0 +1,10 @@
+---
+- name: DNS| add ori.orica.net es.orica.net orica.net suffix to resolv.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/resolvconf/resolv.conf.d/tail
+    line:  search ori.orica.net es.orica.net orica.net
+    create: yes
+- name: DNS| update /etc/resolv.conf
+  shell: "resolvconf -u"
+  become: true

@@ -3,16 +3,16 @@
   hosts: dev
   gather_facts: yes
   vars:
-    install_common: false
-    install_servicenowagent: false
-    install_crowdstrike: false
-    install_qualys: false
-    install_servicenowacc: false
-    install_nxlog: false
+    install_common: true
+    install_servicenowagent: true
+    install_crowdstrike: true
+    install_qualys: true
+    install_servicenowacc: true
+    install_nxlog: true
     install_illumio: true
-    install_icinga: false
-    install_sccm: false
-    joinOriDomain: false
+    install_icinga: true
+    install_sccm: true
+    joinOriDomain: true
     server_region: "apac" #apac/nala/emea
   tasks:
     - include_role: 

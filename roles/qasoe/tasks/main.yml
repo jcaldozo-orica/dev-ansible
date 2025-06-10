@@ -1,0 +1,74 @@
+---
+- name: common SOE
+  include_tasks: common-linux-qa.yml
+  ignore_errors: True
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"] and (include_common is undefined or include_common == true)
+  register: common-soe
+
+- name: common SOE
+  include_tasks: common-windows-qa.yml
+  ignore_errors: True
+  when: ansible_facts['os_family']|lower == "windows" and (include_common is undefined or include_common == true) 
+  register: common-soe
+
+- name: Certificate| install
+  include_tasks: certificate-{{ ansible_facts['os_family']|lower }}-qa.yml
+  ignore_errors: True
+  when: include_common is undefined or include_common == true
+  register: certificate-soe
+  
+- name: DNS| add suffix
+  include_tasks: dnssuffix-{{ ansible_facts['os_family']|lower }}-qa.yml
+  ignore_errors: True
+  when: include_common is undefined or include_common == true
+
+- name: RHEL| subscription management
+  include_tasks: subscription-{{ ansible_facts['os_family']|lower }}.yml
+  when: ansible_facts['os_family']|lower == "redhat" and (include_common is undefined or include_common == true)
+  ignore_errors: True
+
+- name: Crowdstrike| install 
+  include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_crowdstrike is undefined or include_crowdstrike == true
+  ignore_errors: True 
+
+- name: ServiceNowAgent| install 
+  include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_servicenowagent is undefined or include_servicenowagent == true
+  ignore_errors: True 
+
+- name: Qualys| install 
+  include_tasks: qualys-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_qualys is undefined or include_qualys == true
+  ignore_errors: True 
+
+- name: ServiceNowAcc| install 
+  include_tasks: servicenowacc-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_servicenowacc is undefined or include_servicenowacc == true
+  ignore_errors: True 
+
+- name: Nxlog| install 
+  include_tasks: nxlog-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_nxlog is undefined or include_nxlog == true
+  ignore_errors: True 
+
+- name: Illumio| install 
+  include_tasks: illumio-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_illumio is undefined or include_illumio == true
+  ignore_errors: True 
+
+- name: Icinga| Allow 
+  include_tasks: icinga-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_icinga is undefined or include_icinga == true
+  ignore_errors: True 
+
+- name: Join Ori Domain 
+  include_tasks: joinoridomain-{{ ansible_facts['os_family']|lower }}.yml
+  when: include_joinOriDomain == true
+  ignore_errors: True
+
+- name: SCCM install
+  include_tasks: sccm.yml
+  when: include_sccm == true and ansible_facts['os_family']|lower == "windows"
+  ignore_errors: True
+  

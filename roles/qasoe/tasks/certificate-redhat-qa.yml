@@ -1,0 +1,15 @@
+---
+
+- name: Certificate| Update CA trust store
+  shell: |
+    count=`awk -v decoder='openssl x509 -noout -subject -enddate 2>/dev/null' '/BEGIN/{close(decoder)};{print | decoder} ' < /etc/ssl/certs/ca-bundle.trust.crt  | grep 'Orica-Root-CA\|Orica-Subordinate-CA2\|Zscaler Root CA\|Zscaler Intermediate Root CA' | wc -l`
+    if [ "$count" -ge 4 ] ; then 
+        echo "PASS"
+    else
+        echo "FAIL"
+    fi
+  ignore_errors: True
+  register: certificate_count
+
+- name: Certificate| Final check
+  set_fact: certificate_soe = "{{ certificate_check }}"

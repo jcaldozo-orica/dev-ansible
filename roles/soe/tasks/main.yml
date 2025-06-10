@@ -1,5 +1,15 @@
 ---
 - name: common SOE
+  include_tasks: init-linux.yml
+  ignore_errors: True
+  when: ansible_facts['os_family']|lower in ["redhat","ubuntu"] and (install_common is undefined or install_common == true)
+
+- name: common SOE
+  include_tasks: init-windows.yml
+  ignore_errors: True
+  when: ansible_facts['os_family']|lower == "windows" and (install_common is undefined or install_common == true) 
+
+- name: common SOE
   include_tasks: common-linux.yml
   ignore_errors: True
   when: ansible_facts['os_family']|lower in ["redhat","ubuntu"] and (install_common is undefined or install_common == true)
@@ -8,7 +18,6 @@
   include_tasks: common-windows.yml
   ignore_errors: True
   when: ansible_facts['os_family']|lower == "windows" and (install_common is undefined or install_common == true) 
-
 
 - name: Certificate| install
   include_tasks: certificate-{{ ansible_facts['os_family']|lower }}.yml
@@ -25,14 +34,14 @@
   when: ansible_facts['os_family']|lower == "redhat" and (install_common is undefined or install_common == true)
   ignore_errors: True
 
-- name: ServiceNowAgent| install 
-  include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
-  when: install_servicenowagent is undefined or install_servicenowagent == true
-  ignore_errors: True 
-
 - name: Crowdstrike| install 
   include_tasks: crowdstrike-{{ ansible_facts['os_family']|lower }}.yml
   when: install_crowdstrike is undefined or install_crowdstrike == true
+  ignore_errors: True 
+
+- name: ServiceNowAgent| install 
+  include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
+  when: install_servicenowagent is undefined or install_servicenowagent == true
   ignore_errors: True 
 
 - name: Qualys| install 

@@ -1,0 +1,16 @@
+---
+- name: DNS| add ori.orica.net es.orica.net orica.net suffix to resolv.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/dhcp/dhclient.conf
+    line:  append domain-search "ori.orica.net","es.orica.net","orica.net","reddog.microsoft.com";
+    create: yes
+  ignore_errors: True
+
+- name: DNS| restart NetworkManager
+  become: true
+  ansible.builtin.systemd_service:
+    state: restarted
+    enabled: true
+    name: NetworkManager
+  ignore_errors: True

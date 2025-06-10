@@ -1,0 +1,34 @@
+---
+- name: Populate service facts
+  ansible.builtin.service_facts:
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: SSH| check banner file
+  ansible.builtin.stat:
+    path: /etc/ssh/banner.txt
+    get_checksum: no
+  register: common_check1
+
+- name: SSH| check banner config
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    line: 'Banner /etc/ssh/banner.txt'
+  check_mode: true
+  register: common_check2
+    
+- name: SSH| check PermitRootLogin
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    line: 'PermitRootLogin no'
+  check_mode: true
+  register: common_check3
+
+- name: Common SOE| Final check
+  set_fact: common_soe = |
+   
