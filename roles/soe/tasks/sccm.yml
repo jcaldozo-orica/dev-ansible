@@ -3,6 +3,8 @@
   ansible.windows.win_package:
     path: c:\oricatools\windowssoe\sccm\ccmsetup.exe
     arguments:
+      - CCMINSTALLDIR=C:\Windows\CCM
+      - SMSCACHEDIR=C:\Windows\CCM
       - SMSSITECODE=OR1
       - SMSCACHESIZE=20
       - SMSCACHEFLAGS=PERCENTDISKSPACE
