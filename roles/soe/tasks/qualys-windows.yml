@@ -11,16 +11,16 @@
     qualysCid: "{{ kvValue }}"
   ignore_errors: True
 
-- name: Qualys| gather secrets (qualysWinActId)
+- name: Qualys| gather secrets (qualysActId)
   include_tasks: get_kv_secrets.yml
   vars:
-    secretName: "qualysWinActId"
+    secretName: "qualysActId"
   register: kvValue
   ignore_errors: True
 
-- name: Qualys| declare qualysWinActId 
+- name: Qualys| declare qualysActId 
   ansible.builtin.set_fact:
-    qualysWinActId: "{{ kvValue }}"
+    qualysActId: "{{ kvValue }}"
   ignore_errors: True
 
 - name: Qualys| gather secrets (qualysUri)
@@ -41,7 +41,7 @@
     product_id: '{872AD668-585A-4642-8ED2-1C0695CAE776}'
     arguments:
       - CustomerId={{'{'}}{{ qualysCid }}{{'}'}}
-      - ActivationId={{'{'}}{{ qualysWinActId }}{{'}'}}
+      - ActivationId={{'{'}}{{ qualysActId }}{{'}'}}
       - WebServiceUri={{ qualysUri }}
     state: present
   ignore_errors: True
