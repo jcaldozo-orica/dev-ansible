@@ -5,6 +5,7 @@
     pkg:
     - resolvconf
     state: present
+    update_cache: yes
 - name: DNS| add ori.orica.net es.orica.net orica.net suffix to resolv.conf
   become: true
   ansible.builtin.lineinfile:

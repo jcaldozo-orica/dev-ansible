@@ -30,6 +30,7 @@
     pkg:
     - unzip
     state: present
+    update_cache: yes
 - name: ServiceNowAcc| Install via shell
   become: true
   shell: "ACC_API_KEY='{{ accApiKey }}' ACC_MID='{{ accMid }}' bash -c '{{ linuxSoePath }}/install_agent'"

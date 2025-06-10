@@ -7,6 +7,7 @@
     - libapr1
     - libdbi1
     state: present
+    update_cache: yes
 - name: Nxlog| install deb package
   become: true
   ansible.builtin.apt: 

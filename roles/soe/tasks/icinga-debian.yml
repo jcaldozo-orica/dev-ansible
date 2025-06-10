@@ -29,12 +29,15 @@
     key: https://github.com/jcaldozo-orica/dev-ansible/raw/refs/heads/main/roles/soe/files/nagios.key
 - name: Icinga| Install a list of packages for Icinga/Nagios
   become: true
+  retries: 3
+  delay: 3
   ansible.builtin.apt:
     pkg:
     - monitoring-plugins-standard
     - monitoring-plugins
     - python3-pip
     state: present
+    update_cache: yes
 - name: Icinga| symlink nagios lib
   become: true
   ansible.builtin.file:
