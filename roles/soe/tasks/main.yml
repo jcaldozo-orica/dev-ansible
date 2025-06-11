@@ -39,6 +39,11 @@
   when: install_crowdstrike is undefined or install_crowdstrike == true
   ignore_errors: True 
 
+- name: Join Ori Domain 
+  include_tasks: joinoridomain-{{ ansible_facts['os_family']|lower }}.yml
+  when: joinOriDomain == true
+  ignore_errors: True
+
 - name: ServiceNowAgent| install 
   include_tasks: servicenowagent-{{ ansible_facts['os_family']|lower }}.yml
   when: install_servicenowagent is undefined or install_servicenowagent == true
@@ -68,11 +73,6 @@
   include_tasks: icinga-{{ ansible_facts['os_family']|lower }}.yml
   when: install_icinga is undefined or install_icinga == true
   ignore_errors: True 
-
-- name: Join Ori Domain 
-  include_tasks: joinoridomain-{{ ansible_facts['os_family']|lower }}.yml
-  when: joinOriDomain == true
-  ignore_errors: True
 
 - name: SCCM install
   include_tasks: sccm.yml
