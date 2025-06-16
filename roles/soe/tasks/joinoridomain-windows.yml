@@ -24,8 +24,6 @@
     joindomainuser: "{{ kvValue }}"
   ignore_errors: True
 
-- name: 
-
 - name: JoinOriDomain| join
   microsoft.ad.membership:
     dns_domain_name: ori.orica.net

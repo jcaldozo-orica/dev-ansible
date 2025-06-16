@@ -1,6 +1,6 @@
 ---
 - name: TEST
-  hosts: dev
+  hosts: all
   gather_facts: yes
   vars:
     install_common: true
